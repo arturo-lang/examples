@@ -1,0 +1,7 @@
+a: true
+b: false
+
+switch a [ print "yep" ][ print "nope" ]
+
+switch b -> print "nope" 
+         -> print "yep"

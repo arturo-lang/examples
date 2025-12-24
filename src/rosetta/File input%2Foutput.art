@@ -1,0 +1,4 @@
+source: read "input.txt"
+source >> "output.txt"
+ 
+print source
