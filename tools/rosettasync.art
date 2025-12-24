@@ -303,7 +303,7 @@ loop.with:'i localTasks 'task [
                         newContent: replace remoteTask\content found 
                                                             cleanedContent local
 
-                        if login "drkameleon" read.file ./"PW" [
+                        if login "drkameleon" read.file ./"rosetta_pw" [
                             status: (editPage task\title newContent "updated Arturo solution")?
                                 -> color #green "> EDITED"
                                 -> color #red "> FAILED"
