@@ -247,7 +247,7 @@ rc: to :Rosetta []!
 remoteTasks: rc\implemented "Arturo"
 
 ; Get all task titles from example filenames
-localTasks: map sort select list ./"../examples/rosetta" => [suffix? & ".art"] 
+localTasks: map sort select list ./"../src/rosetta" => [suffix? & ".art"] 
                 'file -> #[
                     title: decode.url extract.filename file
                     file: extract.filename file
@@ -277,7 +277,7 @@ loop.with:'i localTasks 'task [
     ; in case we have to omit file
     if any? @[
         and? -> ignoreNonUnitTests?
-             -> not? exists? ~./{../examples/rosetta/|task\file|.res}
+             -> not? exists? ~./{../src/rosetta/|task\file|.res}
         and? -> ignoreFragmented?
              -> contains? task\file "--"
     ][
@@ -290,7 +290,7 @@ loop.with:'i localTasks 'task [
     if remoteTask: <= getRemoteTask task\title [!
         if solution: <= remoteTask\solution "Arturo" [!
             remote: first solution\code
-            local: strip read.file ~./{../examples/rosetta/|task\file|.art}
+            local: strip read.file ~./{../src/rosetta/|task\file|.art}
 
             ok?: solutionsEqual? remote local
             status: ok? ? -> color #green "OK" -> color #red "Hmm..."
