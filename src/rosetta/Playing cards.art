@@ -23,7 +23,7 @@ define :Card [
     ]
 ]
 
-define :deck [
+define :Deck [
     init: method [][
         this\cards: []
         loop ranks 'rank ->
@@ -32,11 +32,11 @@ define :deck [
     ]
 ]
 
-shuffleUp: function [this :deck][
+shuffleUp: function [this :Deck][
     this\cards: shuffle this\cards
 ]
 
-deal: function [this :deck, cnt :integer][
+deal: function [this :Deck, cnt :integer][
     if cnt > size this\cards ->
         panic "Not enough cards in deck"
 
@@ -50,7 +50,7 @@ deal: function [this :deck, cnt :integer][
 ]
 
 ; create a new deck
-Deck: to :deck []
+Deck: to :Deck []
 
 ; and shuffle it
 shuffleUp Deck
