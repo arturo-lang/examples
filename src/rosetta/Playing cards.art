@@ -1,6 +1,9 @@
 ranks: 1..13
 suits: ['♣', '♦', '♥', '♠']
 
+rank?: $ => [in? & ranks]
+suit?: $ => [in? & suits]
+
 interleave: $[
     xs :block :dictionary :range
     ys :block :dictionary :range 
@@ -13,9 +16,8 @@ interleave: $[
 
 define :Card [
     init: method [rank, suit][
-        ensure -> 
-            and? -> contains? ranks rank
-                 -> contains? suits suit
+        ensure -> rank? rank
+        ensure -> suit? suit
 
         this\rank: rank
         this\suit: suit
