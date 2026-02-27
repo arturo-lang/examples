@@ -36,37 +36,36 @@ define :Card [
 ]
 
 card: $[rank suit][
-    to :Card [rank suit]
+    to :Card [rank suit]!
 ]
 
 define :Deck [
     init: method [][
         this\cards: interleave ranks suits 'card
     ]
-]
-
-shuffleUp: function [this :Deck][
-    this\cards: shuffle this\cards
-]
-
-deal: function [this :Deck, cnt :integer][
-    if cnt > size this\cards ->
-        panic "Not enough cards in deck"
-
-    cards: []
-    do.times: cnt [
-        dealt: sample this\cards
-        'cards ++ dealt
-        this\cards: remove this\cards dealt
+    
+    shuffle: method [][
+        shuffle 'this\cards
     ]
-    return cards
+    
+    deal: method [][
+        ensure.that: "Not enough cards in deck" 
+            -> not? empty? \cards
+            
+        \shuffle
+        pop 'this\cards
+    ]
+    
+    dealMany: method [times :integer][
+        map 1..times 'x -> \deal
+    ]
 ]
 
 ; create a new deck
-Deck: to :Deck []
+deck: to :Deck []!
 
 ; and shuffle it
-shuffleUp Deck
+deck\shuffle
 
 ; deal 5 cards
-print deal Deck 5
+print deck\dealMany 5
