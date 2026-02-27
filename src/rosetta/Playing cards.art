@@ -1,7 +1,7 @@
 ranks: 1..13
 suits: ['♣', '♦', '♥', '♠']
 
-define :card [
+define :Card [
     init: method [rank, suit][
         ensure -> 
             and? -> contains? ranks rank
@@ -28,7 +28,7 @@ define :deck [
         this\cards: []
         loop ranks 'rank ->
             loop suits 'suit ->
-                this\cards: this\cards ++ to :card @[rank, suit]
+                this\cards: this\cards ++ to :Card @[rank, suit]
     ]
 ]
 
