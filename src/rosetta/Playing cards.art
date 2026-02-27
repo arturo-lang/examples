@@ -15,7 +15,7 @@ interleave: $[
 ]
 
 define :Card [
-    init: method [rank, suit][
+    init: method [rank :integer suit :char][
         ensure -> rank? rank
         ensure -> suit? suit
 
@@ -35,7 +35,7 @@ define :Card [
     ]
 ]
 
-card: $[rank suit][
+card: $[rank :integer suit :char][
     to :Card [rank suit]!
 ]
 
