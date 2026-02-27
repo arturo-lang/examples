@@ -1,6 +1,16 @@
 ranks: 1..13
 suits: ['♣', '♦', '♥', '♠']
 
+interleave: $[
+    xs :block :dictionary :range
+    ys :block :dictionary :range 
+    apply :literal
+][
+    flatten map xs 'x 
+        -> map ys 'y 
+        -> call apply @[x y]
+]
+
 define :Card [
     init: method [rank, suit][
         ensure -> 
@@ -23,12 +33,13 @@ define :Card [
     ]
 ]
 
+card: $[rank suit][
+    to :Card [rank suit]
+]
+
 define :Deck [
     init: method [][
-        this\cards: []
-        loop ranks 'rank ->
-            loop suits 'suit ->
-                this\cards: this\cards ++ to :Card @[rank, suit]
+        this\cards: interleave ranks suits 'card
     ]
 ]
 
