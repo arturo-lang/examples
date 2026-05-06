@@ -1,3 +1,5 @@
+; by @Krenium
+
 solveWordWheel: function [word dictionary sizeFloor][
     wordTally: tally word
     centerLetter: word\[(size word) / 2]
