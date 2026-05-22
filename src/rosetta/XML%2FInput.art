@@ -10,5 +10,7 @@ data: {
 </Students>
 }
 
-students: read.xml data
-print join.with:"\n" map students 'student -> student\Name
+doc: read.xml data
+root: first doc\children
+students: select root\children 'c -> c\kind = 'element
+print join.with:"\n" map students 'student -> student\attrs\Name
