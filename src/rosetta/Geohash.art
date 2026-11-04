@@ -49,7 +49,7 @@ tests: @[
 loop tests [location, precision] [
     hash: encodeGeohash location precision
     print [
-        pad.right to :string location 24
+        pad.right express location 24
         "precision:" pad to :string precision 2
         "->" hash
     ]
