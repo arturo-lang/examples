@@ -1,0 +1,44 @@
+churchZero: function [f]-> function [x]-> x
+
+churchSucc: function [n][
+    function [f] with 'n [
+        function [x] with [n f] [
+            call 'f @[call (call 'n @[var 'f]) @[x]]
+        ]
+    ]
+]
+
+churchAdd: function [m, n][
+    function [f] with [m n] [
+        function [x] with [m n f] [
+            call (call 'm @[var 'f]) @[call (call 'n @[var 'f]) @[x]]
+        ]
+    ]
+]
+
+churchMul: function [m, n][
+    function [f] with [m n] [
+        call 'm @[call 'n @[var 'f]]
+    ]
+]
+
+churchPow: function [m, n]->
+    call 'n @[var 'm]
+
+churchToInt: function [n]->
+    call (call 'n @[function [x]-> inc x]) @[0]
+
+intToChurch: function [i][
+    result: var 'churchZero
+    do.times: i -> result: churchSucc var 'result
+    return var 'result
+]
+
+three: churchSucc churchSucc churchSucc var 'churchZero
+four: churchSucc var 'three
+
+print ["3 + 4 =" churchToInt churchAdd var 'three var 'four]
+print ["3 * 4 =" churchToInt churchMul var 'three var 'four]
+print ["4 ^ 3 =" churchToInt churchPow var 'four var 'three]
+print ["3 ^ 4 =" churchToInt churchPow var 'three var 'four]
+print ["intToChurch 7 =" churchToInt intToChurch 7]
