@@ -1,0 +1,25 @@
+; unsigned Stirling numbers of the first kind
+
+memo: #[]
+
+S1: function [n k][
+    if n = k -> return 1
+    if or? zero? n zero? k -> return 0
+    if k > n -> return 0
+
+    key: ~"|n|,|k|"
+    unless key? memo key ->
+        memo\[key]: (S1 n-1 k-1) + (n-1) * S1 n-1 k
+    return memo\[key]
+]
+
+print "Unsigned Stirling numbers of the first kind:"
+print @["n/k"] ++ map 0..12 'k ->
+    pad to :string k 10
+loop 0..12 'n ->
+    print @[pad to :string n 3] ++ map 0..n 'k ->
+        pad to :string S1 n k 10
+
+print ""
+print "Maximum value of S1(100, k):"
+print max map 1..100 'k -> S1 100 k
