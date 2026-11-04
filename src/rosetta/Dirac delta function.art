@@ -1,0 +1,4 @@
+diracDelta: function [x]-> (zero? x)? -> ∞ -> 0
+
+print diracDelta 0
+print diracDelta 1
