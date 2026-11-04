@@ -1,0 +1,20 @@
+fft: function [x][
+    n: size x
+    if n =< 1 -> return x
+
+    evens: fft map select 0..dec n => even? 'i -> x\[i]
+    odds:  fft map select 0..dec n => odd? 'i -> x\[i]
+
+    t: map 0..dec n/2 'k ->
+        odds\[k] * exp to :complex @[0, neg (2 * pi * k) / n]
+
+    (map 0..dec n/2 'k -> evens\[k] + t\[k]) ++
+    (map 0..dec n/2 'k -> evens\[k] - t\[k])
+]
+
+input: map [1 1 1 1 0 0 0 0] 'v -> to :complex @[v 0]
+loop fft input 'c ->
+    print [
+        pad to :string.format: ".4f" c\re 8
+        pad to :string.format: ".4f" c\im 8 "i"
+    ]
