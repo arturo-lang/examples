@@ -1,0 +1,17 @@
+bernoulliTriangle: function [n][
+    rows: [[1]]
+    while [n > size rows][
+        r: size rows
+        prev: last rows
+        row: map 0..r 'k -> case k [
+            0   -> 1
+            r   -> 2^r
+            any -> prev\[dec k] + prev\[k]
+        ]
+        'rows ++ @[row]
+    ]
+    rows
+]
+
+loop bernoulliTriangle 15 'row ->
+    print map row 'x -> pad to :string x 5
