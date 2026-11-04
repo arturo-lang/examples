@@ -1,0 +1,20 @@
+toSeconds: function [time][
+    [h, m, s]: to [:integer] split.by: ":" time
+    (h * 3600) + (m * 60) + s
+]
+
+fromSeconds: function [secs]->
+    join.with: ":" map @[secs / 3600, (secs % 3600) / 60, secs % 60] 'x ->
+        pad.with:'0' to :string x 2
+
+meanTime: function [times][
+    angles: map times 't -> (toSeconds t) * 2 * pi / 86400
+    s: sum map angles => sin
+    c: sum map angles => cos
+    mean: ((angle to :complex @[c s]) * 86400) / 2 * pi
+    if mean < 0 -> mean: mean + 86400
+    fromSeconds (to :integer round mean) % 86400
+]
+
+times: ["23:00:17" "23:40:20" "00:12:45" "00:17:19"]
+print ["Mean time of day:" meanTime times]
