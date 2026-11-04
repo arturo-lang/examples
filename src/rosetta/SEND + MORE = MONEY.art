@@ -1,0 +1,18 @@
+M: 1
+
+number: function [ds]->
+    fold ds .seed: 0 [a b] -> b + 10 * a
+
+[0 2 3 4 5 6 7 8 9] | permutate.by: 6
+                    | select => [positive? first &]
+                    | flatten
+                    | loop [S, E, N, D, O, R] [
+    Y: (D + E) % 10
+    unless contains? @[S E N D O R M] Y [
+        send:  number @[S E N D]
+        more:  number @[M O R E]
+        money: number @[M O N E Y]
+        if money = send + more ->
+            print [send "+" more "=" money]
+    ]
+]
