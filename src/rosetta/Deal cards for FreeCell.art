@@ -1,0 +1,25 @@
+cardNames: flatten map split "A23456789TJQK" 'rank ->
+    map split "CDHS" 'suit -> rank ++ suit
+
+deal: function [seed][
+    cards: new cardNames
+    dealt: []
+    loop 52..1 'remaining [
+        seed: ((214013 * seed) + 2531011) % 2^31
+        idx: (shr seed 16) % remaining
+        'dealt ++ cards\[idx]
+        cards\[idx]: last cards
+        cards: chop cards
+    ]
+    dealt
+]
+
+showDeal: function [seed][
+    print ["Game #" ++ to :string seed]
+    loop split.every: 8 deal seed 'row ->
+        print row
+    print ""
+]
+
+showDeal 1
+showDeal 617
