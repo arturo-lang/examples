@@ -1,0 +1,30 @@
+properDivisorSum: function [n]-> (sum factors n) - n
+
+aliquot: function [k][
+    s: @[k]
+    while [and? 16 >= size s (last s) < 2^47][
+        nxt: properDivisorSum last s
+        if contains? s nxt [
+            if nxt = first s [
+                if 1 = size s -> return @["perfect" s]
+                if 2 = size s -> return @["amicable" s]
+                return @[~"sociable of length |size s|" s]
+            ]
+            if nxt = last s -> return @["aspiring" s]
+            return @[~"cyclic back to |nxt|" s]
+        ]
+        if zero? nxt -> return @["terminating" s ++ 0]
+        's ++ nxt
+    ]
+    @["non-terminating" s]
+]
+
+tests: (@1..10) ++ [
+    11 12 28 496 220 1184 12496 1264460
+    790 909 562 1064 1488 15355717786080
+]
+
+loop tests 'k [
+    [kind, terms]: aliquot k
+    print [pad.right kind 22 ":" join.with:", " to [:string] terms]
+]
