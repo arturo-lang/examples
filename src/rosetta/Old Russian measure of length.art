@@ -1,0 +1,19 @@
+specify 'vershok 4.445`cm
+specify 'arshin  71.12`cm
+specify 'sazhen  2.1336`m
+specify 'verst   1.0668`km
+
+units: [`vershok `arshin `sazhen `verst `m `cm `km]
+
+convertAll: function [q][
+    print ["Converting" (to :string q) ++ ":"]
+    loop units 'u [
+        converted: to :floating scalar q --> u
+        print ["   " pad to :string.format: ".6f" converted 16 u]
+    ]
+    print ""
+]
+
+convertAll 1`m
+convertAll 1`verst
+convertAll 10`arshin
