@@ -1,0 +1,59 @@
+damerauLevenshtein: function [a, b][
+    if empty? a -> return size b
+    if empty? b -> return size a
+
+    la: size a
+    lb: size b
+    maxDist: la + lb
+    lastRow: #[]
+
+    d: array.of: @[la + 2, lb + 2] 0
+    d\0\0: maxDist
+    loop 0..la 'i [
+        d\[inc i]\0: maxDist
+        d\[inc i]\1: i
+    ]
+    loop 0..lb 'j [
+        d\0\[inc j]: maxDist
+        d\1\[inc j]: j
+    ]
+
+    loop 1..la 'i [
+        lastMatchCol: 0
+        loop 1..lb 'j [
+            ch: to :string b\[dec j]
+            k: (key? lastRow ch)? -> lastRow\[ch] -> 0
+            l: lastMatchCol
+            cost: 1
+            if a\[dec i] = b\[dec j] [
+                cost: 0
+                lastMatchCol: j
+            ]
+            d\[inc i]\[inc j]: min @[
+                d\[i]\[j] + cost
+                d\[inc i]\[j] + 1
+                d\[i]\[inc j] + 1
+                d\[k]\[l] + (i-k) + dec j-l
+            ]
+        ]
+        lastRow\[to :string a\[dec i]]: i
+    ]
+    d\[inc la]\[inc lb]
+]
+
+tests: [
+    ""        ""
+    ""        "abc"
+    "cat"     "cat"
+    "form"    "from"
+    "CA"      "ABC"
+    "kitten"  "sitting"
+    "ab"      "ba"
+]
+
+loop tests [a, b] ->
+    print [
+        pad.right express a 9
+        pad.right express b 10
+        "->" damerauLevenshtein a b
+    ]
