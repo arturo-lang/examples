@@ -1,0 +1,11 @@
+loop 1..332 'a [
+    loop (inc a)..499 'b [
+        c: 1000 - a + b
+        if (c*c) = (a*a) + b*b ->
+            print [
+                "a:" a "b:" b "c:" c
+                "-> a + b + c =" a + b + c
+                "and a * b * c =" a * b * c
+            ]
+    ]
+]
