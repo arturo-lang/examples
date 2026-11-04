@@ -1,0 +1,42 @@
+value: function [node]-> node\0
+left:  function [node]-> node\1
+right: function [node]-> node\2
+
+tree: [1
+    [2 [4 [7 [] []] []] [5 [] []]]
+    [3 [6 [8 [] []] [9 [] []]] []]
+]
+
+preorder: function [node][
+    if empty? node -> return []
+    @[value node] ++ (preorder left node) ++ preorder right node
+]
+
+inorder: function [node][
+    if empty? node -> return []
+    (inorder left node) ++ @[value node] ++ inorder right node
+]
+
+postorder: function [node][
+    if empty? node -> return []
+    (postorder left node) ++ (postorder right node) ++ value node
+]
+
+levelorder: function [node][
+    result: []
+    queue: @[node]
+    while [not? empty? queue][
+        current: first queue
+        queue: drop queue
+        unless empty? current [
+            'result ++ value current
+            'queue ++ @[left current, right current]
+        ]
+    ]
+    return result
+]
+
+print ["preorder:   " preorder tree]
+print ["inorder:    " inorder tree]
+print ["postorder:  " postorder tree]
+print ["level-order:" levelorder tree]
