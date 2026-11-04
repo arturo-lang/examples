@@ -1,0 +1,15 @@
+walsh: function [k][
+    if k = 1 -> return @[@[1 1] @[1 neg 1]]
+    w: walsh dec k
+    top:    map w 'row -> row ++ row
+    bottom: map w 'row -> row ++ map row => neg
+    top ++ bottom
+]
+
+loop 1..4 'k [
+    order: 2^k
+    print ["Walsh matrix of order" (to :string order) ++ ":"]
+    loop walsh k 'row ->
+        print map row 'x -> pad to :string x 2
+    print ""
+]
