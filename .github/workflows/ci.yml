@@ -14,7 +14,7 @@ concurrency:
 jobs:
     Test:
         runs-on: ${{
-            (matrix.os == 'macos')   && 'macOS-15-intel' ||
+            (matrix.os == 'macos')   && 'macos-26-intel' ||
             (matrix.os == 'windows') && 'windows-latest' ||
                                         'ubuntu-latest'  }}
 
