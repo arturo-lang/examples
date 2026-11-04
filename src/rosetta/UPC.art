@@ -1,0 +1,58 @@
+barcodes: [
+    "         # #   # ##  #  ## #   ## ### ## ### ## #### # # # ## ##  #   #  ##  ## ###  # ##  ## ### #  # #       "
+    "        # # #   ##   ## # #### #   # ## #   ## #   ## # # # ###  # ###  ##  ## ###  # #  ### ###  # # #         "
+    "         # #    # # #  ###  #   #    # #  #   #    # # # # ## #   ## #   ## #   ##   # # #### ### ## # #         "
+    "       # # ##  ## ##  ##   #  #   #  # ###  # ##  ## # # #   ## ##  #  ### ## ## #   # #### ## #   # #        "
+    "         # # ### ## #   ## ## ###  ##  # ##   #   # ## # # ### #  ## ##  #    # ### #  ## ##  #      # #          "
+    "          # #  #   # ##  ##  #   #   #  # ##  ##  #   # # # # #### #  ##  # #### #### # #  ##  # #### # #         "
+    "         # #  #  ##  ##  # #   ## ##   # ### ## ##   # # # #  #   #   #  #  ### # #    ###  # #  #   # #        "
+    "        # # #    # ##  ##   #  # ##  ##  ### #   #  # # # ### ## ## ### ## ### ### ## #  ##  ### ## # #         "
+    "         # # ### ##   ## # # #### #   ## # #### # #### # # #   #  # ###  #    # ###  # #    # ###  # # #       "
+    "        # # # #### ##   # #### # #   ## ## ### #### # # # #  ### # ###  ###  # # ###  #    # #  ### # #         "
+]
+
+leftCodes: [
+    "   ## #" "  ##  #" "  #  ##" " #### #" " #   ##"
+    " ##   #" " # ####" " ### ##" " ## ###" "   # ##"
+]
+
+invert: function [str]-> join map str 'c -> (c = '#')? -> " " -> "#"
+rightCodes: map leftCodes => invert
+
+decodeHalf: function [str, codes][
+    result: []
+    loop split.every: 7 str 'group [
+        digit: index codes group
+        if null? digit -> return null
+        'result ++ digit
+    ]
+    return result
+]
+
+decode: function [s][
+    unless and? 95 = size s
+                and? "# #" = slice s 0 2
+                and? " # # " = slice s 45 49
+                     "# #" = slice s 92 94 -> return null
+
+    left: decodeHalf slice s 3 44 leftCodes
+    right: decodeHalf slice s 50 91 rightCodes
+    if or? null? left null? right -> return null
+
+    result: left ++ right
+    checksum: sum map.with:'i result 'd -> (even? i)? -> 3 * d -> d
+    unless zero? checksum % 10 -> return null
+
+    return result
+]
+
+loop barcodes 'line [
+    s: strip line
+    normal: decode s
+    flipped: decode reverse s
+    when [
+        not? null? normal  -> print join to [:string] normal
+        not? null? flipped -> print [join to [:string] flipped "(upside down)"]
+        true               -> print "invalid"
+    ]
+]
