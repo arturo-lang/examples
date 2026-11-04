@@ -1,0 +1,27 @@
+seasons:  ["Chaos" "Discord" "Confusion" "Bureaucracy" "The Aftermath"]
+weekdays: ["Sweetmorn" "Boomtime" "Pungenday" "Prickle-Prickle" "Setting Orange"]
+apostles: ["Mungday" "Mojoday" "Syaday" "Zaraday" "Maladay"]
+fluxes:   ["Chaoflux" "Discoflux" "Confuflux" "Bureflux" "Afflux"]
+
+discordian: function [date][
+    yold: date\year + 1166
+    yday: date\days
+
+    if leap? date [
+        if yday = 59 -> return ~"St. Tib's Day, |yold| YOLD"
+        if yday > 59 -> 'yday - 1
+    ]
+
+    season: yday / 73
+    day: 1 + yday % 73
+
+    result: ~"|weekdays\[yday % 5]|, |seasons\[season]| |day|, |yold| YOLD"
+    case day [
+        5  -> 'result ++ ~" (|apostles\[season]|)"
+        50 -> 'result ++ ~" (|fluxes\[season]|)"
+    ]
+    return result
+]
+
+loop ["2010-07-22" "2012-02-28" "2012-02-29" "2012-03-01" "2010-01-05" "2011-05-03" "2015-10-19"] 'd ->
+    print [d "->" discordian to :date.format: "yyyy-MM-dd" d]
