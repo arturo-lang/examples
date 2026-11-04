@@ -1,0 +1,15 @@
+nonContinuous: function [seq][
+    gapped: select powerset @0..dec size seq 's ->
+        and? -> 1 < size s
+             -> (size s) < inc (last s) - first s
+    map gapped 's -> map s 'i -> seq\[i]
+]
+
+loop nonContinuous [1 2 3 4] 'subseq ->
+    print subseq
+
+print ""
+loop 5..10 'n [
+    total: size nonContinuous @1..n
+    print ["non-continuous subsequences of a sequence of" n "elements:" total]
+]
