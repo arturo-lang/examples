@@ -1,0 +1,23 @@
+generate: function [wheels, count][
+    positions: #[]
+    loop keys wheels 'w -> positions\[w]: 0
+
+    nextFrom: function [name][
+        wheel: wheels\[name]
+        item: wheel\[positions\[name]]
+        positions\[name]: (inc positions\[name]) % size wheel
+        (integer? item)? -> item -> nextFrom item
+    ]
+
+    map 1..count 'x -> nextFrom "A"
+]
+
+loop @[
+    #[A: [1 2 3]]
+    #[A: [1 "B" 2], B: [3 4]]
+    #[A: [1 "D" "D"], D: [6 7 8]]
+    #[A: [1 "B" "C"], B: [3 4], C: [5 "B"]]
+] 'wheels [
+    print ["Wheels:" wheels]
+    print ["  " generate wheels 20]
+]
