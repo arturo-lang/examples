@@ -43,6 +43,7 @@ jobs:
             # only the examples added or modified by the PR are tested;
             # slow ones (with a `_res` file instead of `.res`) are skipped
             - name: Find changed examples
+              id: changed
               shell: bash
               run: |
                 if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -60,10 +61,17 @@ jobs:
                         fi
                       done > changed-examples.txt
 
-                echo "Examples to test:"
-                cat changed-examples.txt
+                if [ -s changed-examples.txt ]; then
+                    echo "any=true" >> "$GITHUB_OUTPUT"
+                    echo "Examples to test:"
+                    cat changed-examples.txt
+                else
+                    echo "any=false" >> "$GITHUB_OUTPUT"
+                    echo "No new or modified examples to test"
+                fi
 
             - name: Install Arturo
+              if: steps.changed.outputs.any == 'true'
               uses: arturo-lang/setup-arturo@v2
               with:
                 token: ${{ secrets.GITHUB_TOKEN }}
@@ -73,6 +81,7 @@ jobs:
                 mode: full
 
             - name: Run changed examples
+              if: steps.changed.outputs.any == 'true'
               timeout-minutes: 30
               run: |
                 arturo -v
