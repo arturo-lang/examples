@@ -1,5 +1,5 @@
 walsh: function [k][
-    if k = 1 -> return @[@[1 1] @[1 neg 1]]
+    if k = 1 -> return @[[1 1] @[1 neg 1]]
     w: walsh dec k
     top:    map w 'row -> row ++ row
     bottom: map w 'row -> row ++ map row => neg

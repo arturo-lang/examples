@@ -12,7 +12,7 @@ S2: function [n k][
 ]
 
 print "Stirling numbers of the second kind:"
-print @["n/k"] ++ map 0..12 'k ->
+print ["n/k"] ++ map 0..12 'k ->
     pad to :string k 9
 loop 0..12 'n ->
     print @[pad to :string n 3] ++ map 0..n 'k ->

@@ -14,7 +14,7 @@ S1: function [n k][
 ]
 
 print "Unsigned Stirling numbers of the first kind:"
-print @["n/k"] ++ map 0..12 'k ->
+print ["n/k"] ++ map 0..12 'k ->
     pad to :string k 10
 loop 0..12 'n ->
     print @[pad to :string n 3] ++ map 0..n 'k ->
