@@ -1,0 +1,37 @@
+fourRings: function [low, high, distinct][
+    allowed: low..high
+    solutions: []
+    loop allowed 'a ->
+        loop allowed 'b ->
+            loop allowed 'c [
+                s: a + b
+                d: s - b + c
+                if in? d allowed [
+                    loop allowed 'e [
+                        f: s - d + e
+                        g: s - f
+                        if every? @[f g] => [in? & allowed] [
+                            candidate: @[a b c d e f g]
+                            if or? not? distinct 7 = size unique candidate ->
+                                'solutions ++ @[candidate]
+                        ]
+                    ]
+                ]
+            ]
+    solutions
+]
+
+ranges: [
+    1 7
+    3 9
+]
+
+loop ranges [low, high] [
+    solutions: fourRings low high true
+    loop solutions 's ->
+        print join.with:", " to [:string] s
+    print [size solutions "unique solutions in" low "to" high]
+    print ""
+]
+
+print [size fourRings 0 9 false "non-unique solutions in 0 to 9"]
