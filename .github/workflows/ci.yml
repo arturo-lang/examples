@@ -14,7 +14,7 @@ concurrency:
 jobs:
     Test:
         runs-on: ${{
-            (matrix.os == 'macos')   && 'macos-latest'   ||
+            (matrix.os == 'macos')   && 'macOS-15-intel' ||
             (matrix.os == 'windows') && 'windows-latest' ||
                                         'ubuntu-latest'  }}
 
@@ -24,7 +24,7 @@ jobs:
                 include:
                     - {os: linux,   arch: amd64}
                     - {os: windows, arch: amd64}
-                    - {os: macos,   arch: arm64}
+                    - {os: macos,   arch: amd64}
                     - {os: freebsd, arch: amd64}
 
         defaults:
