@@ -1,0 +1,38 @@
+matrixChain: function [dims][
+    n: dec size dims
+    cost: map 1..n 'i -> map 1..n 'j -> 0
+    splits: map 1..n 'i -> map 1..n 'j -> 0
+
+    loop 1..dec n 'span [
+        loop 0..dec n-span 'i [
+            j: i + span
+            cost\[i]\[j]: ∞
+            loop i..dec j 'k [
+                c: cost\[i]\[k] + cost\[inc k]\[j] + dims\[i] * dims\[inc k] * dims\[inc j]
+                if c < cost\[i]\[j] [
+                    cost\[i]\[j]: c
+                    splits\[i]\[j]: k
+                ]
+            ]
+        ]
+    ]
+    #[cost: cost\0\[dec n], splits: splits]
+]
+
+parenthesize: function [splits, i, j][
+    if i = j -> return to :string to :char 65 + i
+    k: splits\[i]\[j]
+    "(" ++ (parenthesize splits i k) ++ (parenthesize splits inc k j) ++ ")"
+]
+
+loop [
+    [5 6 3 1]
+    [1 5 25 30 100 70 2 1 100 250 1 1000 2]
+    [1000 1 500 12 1 700 2500 3 2 5 14 10]
+] 'dims [
+    result: matrixChain dims
+    print ["Dims: " dims]
+    print ["Order:" parenthesize result\splits 0 (size dims)-2]
+    print ["Cost: " result\cost]
+    print ""
+]
