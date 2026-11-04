@@ -1,0 +1,20 @@
+m: 10^9
+
+subtractiveGenerator: function [seed, count][
+    s: @[seed 1]
+    loop 2..54 'n ->
+        's ++ (s\[n-2] - s\[n-1]) % m
+
+    state: map 0..54 'n -> s\[(34 * inc n) % 55]
+    produced: []
+    do.times: 165 + count [
+        item: (state\0 - state\31) % m
+        if item < 0 -> item: item + m
+        state: (drop state) ++ item
+        'produced ++ item
+    ]
+    last.n: count produced
+]
+
+loop subtractiveGenerator 292929 10 'r ->
+    print r
