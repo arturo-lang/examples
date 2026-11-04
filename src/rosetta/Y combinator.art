@@ -21,11 +21,11 @@ almostFibonacci: function [self][
     ]
 ]
 
-factorial: Y var 'almostFactorial
-fibonacci: Y var 'almostFibonacci
+factorial: Y var 'almostFactorial!
+fibonacci: Y var 'almostFibonacci!
 
-factorials: map 1..10 'n -> call 'factorial @[n]
-fibonaccis: map 1..10 'n -> call 'fibonacci @[n]
+factorials: map 1..10 => factorial
+fibonaccis: map 1..10 => fibonacci
 
 print ["factorials:" factorials]
 print ["fibonacci: " fibonaccis]
