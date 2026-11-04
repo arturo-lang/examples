@@ -1,0 +1,41 @@
+STX: to :char 2
+ETX: to :char 3
+
+bwt: function [str][
+    ensure -> not? or? contains? str STX contains? str ETX
+
+    s: (to :string STX) ++ str ++ to :string ETX
+    rotations: map 0..dec size s 'i -> rotate s i
+    join map sort.sensitive rotations 'r -> last r
+]
+
+ibwt: function [str][
+    table: array.of: size str ""
+    do.times: size str ->
+        table: sort.sensitive map couple split str table 'pair ->
+            pair\0 ++ pair\1
+
+    row: first select table 'r -> ETX = last r
+    slice row 1 (size row) - 2
+]
+
+visible: function [str]->
+    replace replace str to :string STX "^" to :string ETX "|"
+
+loop [
+    "banana"
+    "appellee"
+    "dogwood"
+    "TO BE OR NOT TO BE OR WANT TO BE OR NOT?"
+    "SIX.MIXED.PIXIES.SIFT.SIXTY.PIXIE.DUST.BOXES"
+] 'str [
+    transformed: bwt str
+    print [str]
+    print ["  -->" visible transformed]
+    print ["  -->" ibwt transformed]
+    print ""
+]
+
+bad: (to :string STX) ++ "ABC" ++ to :string ETX
+print [visible bad]
+print ["  --> ERROR:" (throws? -> bwt bad)? -> "String can't contain STX or ETX" -> "?"]
