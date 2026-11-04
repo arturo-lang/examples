@@ -1,0 +1,29 @@
+luhn?: function [str][
+    s: 0
+    loop.with:'i reverse str 'ch [
+        d: to :integer to :string ch
+        if odd? i [
+            d: 2 * d
+            if d > 9 -> d: d - 9
+        ]
+        s: s + d
+    ]
+    zero? s % 10
+]
+
+base36: join flatten @[@'0'..'9' @'A'..'Z']
+
+isin?: function [str][
+    unless match? str {/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/} -> return false
+    luhn? join to [:string] map str 'ch -> index base36 to :string ch
+]
+
+codes: [
+    "US0378331005" "US0373831005" "U50378331005" "US03378331005"
+    "AU0000XVGZA3" "AU0000VXGZA3" "FR0000988040"
+]
+
+loop codes 'code [
+    status: (isin? code)? -> "valid" -> "not valid"
+    print [code "->" status]
+]
