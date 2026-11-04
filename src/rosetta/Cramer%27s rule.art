@@ -1,0 +1,35 @@
+determinant: function [m][
+    if 1 = size m -> return m\0\0
+
+    result: 0
+    loop.with:'j m\0 'x [
+        minor: map drop m 'row -> remove.index row j
+        term: x * determinant minor
+        result: (even? j)? -> result + term -> result - term
+    ]
+    return result
+]
+
+replaceColumn: function [m, col, rhs]->
+    map.with:'i m 'row [
+        r: new row
+        r\[col]: rhs\[i]
+        r
+    ]
+
+cramer: function [m, rhs][
+    d: determinant m
+    map 0..dec size m 'col ->
+        (determinant replaceColumn m col rhs) / d
+]
+
+equations: @[
+    @[2  neg 1      5      1]
+    @[3      2      2  neg 6]
+    @[1      3      3  neg 1]
+    @[5  neg 2  neg 3      3]
+]
+results: @[neg 3  neg 32  neg 47  49]
+
+[w, x, y, z]: cramer equations results
+print ["w:" w "x:" x "y:" y "z:" z]
