@@ -1,0 +1,22 @@
+squeeze: function [str, ch][
+    result: ""
+    loop str 'c ->
+        unless and? c = ch ch = last result -> 'result ++ c
+    return result
+]
+
+showSqueeze: function [str, ch][
+    squeezed: squeeze str ch
+    print ["specified character: '" ++ (to :string ch) ++ "'"]
+    loop @["original" str "squeezed" squeezed] [label, s] ->
+        print ["  " ++ label ++ ": length" pad to :string size s 2 "«««" ++ s ++ "»»»"]
+    print ""
+]
+
+truman: "                                                    --- Harry S Truman  "
+
+showSqueeze "" ' '
+showSqueeze "\"If I were two-faced, would I be wearing this one?\" --- Abraham Lincoln " '-'
+showSqueeze "..1111111111111111111111111111111111111111111111111111111111111117777888" '7'
+showSqueeze "I never give 'em hell, I just tell the truth, and they think it's hell. " '.'
+loop [' ' '-' 'r'] 'ch -> showSqueeze truman ch
