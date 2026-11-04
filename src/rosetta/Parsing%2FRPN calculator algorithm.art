@@ -1,0 +1,32 @@
+evaluateRPN: function [expression][
+    stack: []
+    print [pad.right "Token" 7 pad.right "Action" 12 "Stack"]
+    loop split.words expression 'token [
+        switch contains? ["+" "-" "*" "/" "^"] token [
+            b: last stack
+            stack: chop stack
+            a: last stack
+            stack: chop stack
+            'stack ++ case token [
+                "+" -> a + b
+                "-" -> a - b
+                "*" -> a * b
+                "/" -> a / b
+                "^" -> a ^ b
+            ]
+            action: "Apply op"
+        ][
+            'stack ++ to :floating token
+            action: "Push num"
+        ]
+        print [
+            pad.right token 7
+            pad.right action 12
+            join.with:" " to [:string] stack
+        ]
+    ]
+    print ""
+    print ["Result:" last stack]
+]
+
+evaluateRPN "3 4 2 * 1 5 - 2 3 ^ ^ / +"
