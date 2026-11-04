@@ -1,0 +1,19 @@
+choose: function [n, k][
+    if k > n -> return 0
+    (factorial n) / (factorial k) * factorial n-k
+]
+
+pascalUpper:     function [n]-> map 0..dec n 'i -> map 0..dec n 'j -> choose j i
+pascalLower:     function [n]-> map 0..dec n 'i -> map 0..dec n 'j -> choose i j
+pascalSymmetric: function [n]-> map 0..dec n 'i -> map 0..dec n 'j -> choose i+j i
+
+printMatrix: function [title, matrix][
+    print title
+    loop matrix 'row ->
+        print map row 'x -> pad to :string x 3
+    print ""
+]
+
+printMatrix "Pascal upper-triangular matrix:" pascalUpper 5
+printMatrix "Pascal lower-triangular matrix:" pascalLower 5
+printMatrix "Pascal symmetric matrix:" pascalSymmetric 5
