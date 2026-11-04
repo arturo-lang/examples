@@ -1,0 +1,32 @@
+animals:  ["Rat" "Ox" "Tiger" "Rabbit" "Dragon" "Snake" "Horse" "Goat" "Monkey" "Rooster" "Dog" "Pig"]
+elements: ["Wood" "Fire" "Earth" "Metal" "Water"]
+aspects:  ["yang" "yin"]
+
+stems:    ["jiă" "yĭ" "bĭng" "dīng" "wù" "jĭ" "gēng" "xīn" "rén" "gŭi"]
+branches: ["zĭ" "chŏu" "yín" "măo" "chén" "sì" "wŭ" "wèi" "shēn" "yŏu" "xū" "hài"]
+
+zodiac: function [year][
+    cycleYear: (year - 4) % 60
+    stem: cycleYear % 10
+    branch: cycleYear % 12
+
+    #[
+        year: year
+        element: elements\[stem / 2]
+        animal: animals\[branch]
+        aspect: aspects\[stem % 2]
+        position: cycleYear + 1
+        name: ~"|stems\[stem]|-|branches\[branch]|"
+    ]
+]
+
+loop [1935 1938 1968 1972 1976 1984 2017 2025] 'y [
+    z: zodiac y
+    print [
+        (to :string z\year) ++ ":"
+        z\element z\animal
+        "(" z\aspect "),"
+        "year" z\position "of the cycle -"
+        z\name
+    ]
+]
