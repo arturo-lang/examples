@@ -2,26 +2,26 @@ brent: function [f, x0][
     power: 1
     lam: 1
     tortoise: x0
-    hare: call f @[x0]
+    hare: f x0
     while [tortoise <> hare][
         if power = lam [
             tortoise: hare
             power: 2 * power
             lam: 0
         ]
-        hare: call f @[hare]
+        hare: f hare
         lam: inc lam
     ]
 
     tortoise: x0
     hare: x0
     do.times: lam ->
-        hare: call f @[hare]
+        hare: f hare
 
     mu: 0
     while [tortoise <> hare][
-        tortoise: call f @[tortoise]
-        hare: call f @[hare]
+        tortoise: f tortoise
+        hare: f hare
         mu: inc mu
     ]
     @[lam mu]
@@ -34,7 +34,7 @@ do.times: 40 ->
     'sequence ++ iterated last sequence
 print join.with:"," to [:string] sequence
 
-[lam, mu]: brent 'iterated 3
+[lam, mu]: brent var 'iterated 3
 print ["Cycle length =" lam]
 print ["Start index =" mu]
 print ["Cycle:" slice sequence mu dec mu + lam]
