@@ -1,0 +1,26 @@
+chao: function [text, left, right][
+    decrypting?: not? null? attr 'decrypt
+    result: ""
+
+    loop text 'ch [
+        idx: index (decrypting?)? -> left -> right to :string ch
+        'result ++ (decrypting?)? -> right\[idx] -> left\[idx]
+
+        left: (slice left idx 25) ++ slice left 0 dec idx
+        left: (slice left 0 0) ++ (slice left 2 13) ++ (to :string left\1) ++ slice left 14 25
+
+        right: (slice right idx 25) ++ slice right 0 dec idx
+        right: (slice right 1 25) ++ to :string right\0
+        right: (slice right 0 1) ++ (slice right 3 13) ++ (to :string right\2) ++ slice right 14 25
+    ]
+    return result
+]
+
+L: "HXUCZVAMDSLKPEFJRIGTWOBNYQ"
+R: "PTLNBQDEOYSFAVZKGJRIHWXUMC"
+
+plain: "WELLDONEISBETTERTHANWELLSAID"
+encrypted: chao plain L R
+print ["Plaintext: " plain]
+print ["Ciphertext:" encrypted]
+print ["Decrypted: " chao.decrypt encrypted L R]
