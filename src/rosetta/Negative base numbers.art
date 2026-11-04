@@ -1,0 +1,32 @@
+symbols: join flatten @[@'0'..'9' @'A'..'Z' @'a'..'z']
+
+encodeNeg: function [n, base][
+    if zero? n -> return "0"
+    result: ""
+    while [not? zero? n][
+        [q, r]: divmod n base
+        if r < 0 [
+            r: r - base
+            inc 'q
+        ]
+        prepend 'result symbols\[r]
+        n: q
+    ]
+    return result
+]
+
+decodeNeg: function [str, base]->
+    fold.seed: 0 str [acc, ch] -> (acc * base) + index symbols to :string ch
+
+loop @[10 neg 2, 146 neg 3, 15 neg 10] [n, base][
+    encoded: encodeNeg n base
+    decoded: decodeNeg encoded base
+    print [
+        pad to :string n 4 "encoded in base" pad to :string base 3
+        "=" pad encoded 6 "->" decoded
+    ]
+]
+
+print ""
+arturo: decodeNeg "Arturo" neg 62
+print [arturo "encoded in base -62 =" encodeNeg arturo neg 62]
