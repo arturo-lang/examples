@@ -7,7 +7,7 @@ squeeze: function [str, ch][
 
 showSqueeze: function [str, ch][
     squeezed: squeeze str ch
-    print ["specified character: '" ++ (to :string ch) ++ "'"]
+    print ["specified character:" express ch]
     loop @["original" str "squeezed" squeezed] [label, s] ->
         print ["  " ++ label ++ ": length" pad to :string size s 2 "«««" ++ s ++ "»»»"]
     print ""
