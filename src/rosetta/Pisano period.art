@@ -1,0 +1,37 @@
+pisanoPeriod: function [m][
+    if m = 1 -> return 1
+    [a, b]: [0 1]
+    period: 0
+    while ø [
+        [a, b]: @[b, (a + b) % m]
+        inc 'period
+        if and? zero? a one? b -> return period
+    ]
+]
+
+pisanoPrime: function [p, k]-> (pisanoPeriod p) * p ^ dec k
+
+pisano: function [m][
+    if m = 1 -> return 1
+    lcm map tally factors.prime m [p, k] -> pisanoPrime to :integer p k
+]
+
+printEvery: function [items, perLine][
+    loop split.every: perLine items 'row ->
+        print map row 'x -> pad to :string x 4
+    print ""
+]
+
+squares: 2..14 | select => prime?
+               | map 'p -> pisanoPrime p 2
+print "pisanoPrime(p, 2) for primes p < 15:"
+printEvery squares 10
+
+singles: 2..179 | select => prime?
+                | map 'p -> pisanoPrime p 1
+print "pisanoPrime(p, 1) for primes p < 180:"
+printEvery singles 15
+
+periods: map 1..180 => pisano
+print "pisano(m) for m = 1..180:"
+printEvery periods 15
