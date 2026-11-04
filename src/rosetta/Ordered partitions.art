@@ -1,0 +1,22 @@
+distribute: function [items, sizes][
+    if empty? sizes -> return [[]]
+    result: []
+    loop combine.by: first sizes items 'chosen [
+        remaining: difference items chosen
+        loop distribute remaining drop sizes 'others ->
+            'result ++ @[@[chosen] ++ others]
+    ]
+    result
+]
+
+partitions: function [sizes]->
+    distribute @1..sum sizes sizes
+
+showSet: function [s]->
+    "{" ++ (join.with:", " to [:string] s) ++ "}"
+
+sizes: (empty? arg)? -> [2 0 2]
+                     -> to [:integer] arg
+
+loop partitions sizes 'p ->
+    print ["(" ++ (join.with:", " map p => showSet) ++ ")"]
