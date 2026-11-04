@@ -1,0 +1,55 @@
+items: [
+    "map"                       9   150
+    "compass"                  13    35
+    "water"                   153   200
+    "sandwich"                 50   160
+    "glucose"                  15    60
+    "tin"                      68    45
+    "banana"                   27    60
+    "apple"                    39    40
+    "cheese"                   23    30
+    "beer"                     52    10
+    "suntan cream"             11    70
+    "camera"                   32    30
+    "T-shirt"                  24    15
+    "trousers"                 48    10
+    "umbrella"                 73    40
+    "waterproof trousers"      42    70
+    "waterproof overclothes"   43    75
+    "note-case"                22    80
+    "sunglasses"                7    20
+    "towel"                    18    12
+    "socks"                     4    50
+    "book"                     30    10
+]
+
+knapsack: function [items, capacity][
+    best: array.of: capacity+1 #[value: 0, packed: []]
+
+    loop items [name, weight, value][
+        loop capacity..weight 'w [
+            candidate: value + best\[w - weight]\value
+            if candidate > best\[w]\value ->
+                best\[w]: #[
+                    value: candidate
+                    packed: best\[w - weight]\packed ++ name
+                ]
+        ]
+    ]
+    return last best
+]
+
+result: knapsack items 400
+
+print "Items to pack:"
+loop result\packed 'name ->
+    print ["  -" name]
+
+print ""
+weights: #[]
+loop items [name, weight, value] ->
+    weights\[name]: weight
+totalWeight: sum map result\packed 'name -> weights\[name]
+
+print ["Total weight:" totalWeight]
+print ["Total value: " result\value]
