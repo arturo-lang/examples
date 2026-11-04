@@ -1,0 +1,53 @@
+gaussianElimination: function [a, b][
+    m: new a
+    x: new b
+    n: size m
+
+    loop 0..n-2 'col [
+        pivot: col
+        best: 0.0
+        loop col..dec n 'row [
+            scale: max map slice m\[row] col dec n => abs
+            if scale > 0 [
+                ratio: (abs m\[row]\[col]) / scale
+                if ratio > best [
+                    best: ratio
+                    pivot: row
+                ]
+            ]
+        ]
+
+        if pivot <> col [
+            tmp: m\[col]  m\[col]: m\[pivot]  m\[pivot]: tmp
+            tmp: x\[col]  x\[col]: x\[pivot]  x\[pivot]: tmp
+        ]
+
+        loop (inc col)..dec n 'row [
+            factor: m\[row]\[col] / m\[col]\[col]
+            loop col..dec n 'k [
+                m\[row]\[k]: m\[row]\[k] - factor * m\[col]\[k]
+            ]
+            x\[row]: x\[row] - factor * x\[col]
+        ]
+    ]
+
+    loop (dec n)..0 'row [
+        known: sum map couple drop.times: inc row m\[row]
+                              drop.times: inc row x 'p -> p\0 * p\1
+        x\[row]: (x\[row] - known) / m\[row]\[row]
+    ]
+    x
+]
+
+A: [
+    [1.00 0.00 0.00  0.00  0.00   0.00]
+    [1.00 0.63 0.39  0.25  0.16   0.10]
+    [1.00 1.26 1.58  1.98  2.49   3.13]
+    [1.00 1.88 3.55  6.70 12.62  23.80]
+    [1.00 2.51 6.32 15.88 39.90 100.28]
+    [1.00 3.14 9.87 31.01 97.41 306.02]
+]
+b: @[neg 0.01 0.61 0.91 0.99 0.60 0.02]
+
+loop gaussianElimination A b 'v ->
+    print v
