@@ -1,0 +1,5 @@
+ALLOW LOLLY -> [yellow yellow green grey grey] 
+BULLY LOLLY -> [grey grey green green green] 
+ROBIN ALERT -> [grey grey grey yellow grey] 
+ROBIN SONIC -> [grey green yellow green grey] 
+ROBIN ROBIN -> [green green green green green] 
