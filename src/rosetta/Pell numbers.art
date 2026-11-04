@@ -1,0 +1,34 @@
+pellLike: function [a b n][
+    result: @[a b]
+    while [n > size result] ->
+        'result ++ (2 * last result) + result\[(size result) - 2]
+    return result
+]
+
+P: pellLike 0 1 100
+Q: pellLike 2 2 100
+
+print ["First 10 Pell numbers:" first.n: 10 P]
+print ["First 10 Pell-Lucas numbers:" first.n: 10 Q]
+
+print ""
+print "First 10 rational approximations of sqrt(2):"
+print map 1..10 'n ->
+    to :rational @[Q\[n] / 2, P\[n]]
+
+print ""
+pellPrimeIndices: select 0..99 'i -> prime? P\[i]
+pellPrimes: map first.n: 10 pellPrimeIndices 'i -> P\[i]
+print ["First 10 Pell primes:" pellPrimes]
+print ["First 10 Pell prime indices:" first.n: 10 pellPrimeIndices]
+
+print ""
+nsw: map 0..9 'n -> P\[2*n] + P\[1 + 2*n]
+print ["First 10 Newman-Shank-Williams numbers:" nsw]
+
+print ""
+print "First 10 near isosceles right triangles:"
+loop 1..10 'n [
+    shorter: sum slice P 0 2*n
+    print [shorter shorter+1 P\[1 + 2*n]]
+]
