@@ -1,0 +1,35 @@
+coordinates: function [square, ch][
+    i: index square to :string ch
+    @[i/5, i%5]
+]
+
+encrypt: function [square, message][
+    msg: replace upper message "J" "I"
+    coords: map msg 'ch -> coordinates square ch
+    nums: (map coords => first) ++ map coords => last
+    join map split.every: 2 nums 'p -> square\[(5 * p\0) + p\1]
+]
+
+decrypt: function [square, message][
+    coords: flatten map message 'ch -> coordinates square ch
+    half: (size coords) / 2
+    rows: slice coords 0 dec half
+    cols: slice coords half dec size coords
+    join map 0..dec half 'i -> square\[(5 * rows\[i]) + cols\[i]]
+]
+
+test: function [square, message][
+    encrypted: encrypt square message
+    print ["Message:  " message]
+    print ["Encrypted:" encrypted]
+    print ["Decrypted:" decrypt square encrypted]
+    print ""
+]
+
+classic:   "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+wikipedia: "BGWKZQPNDSIOAXEFCLUMTHYVR"
+
+test classic "ATTACKATDAWN"
+test wikipedia "FLEEATONCE"
+test wikipedia "ATTACKATDAWN"
+test classic upper replace "The invasion will start on the first of January" " " ""
