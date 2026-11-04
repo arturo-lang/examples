@@ -43,7 +43,7 @@ decodeGeohash: function [hash][
 tests: @[
     @[51.433718 neg 0.214126]  2
     @[51.433718 neg 0.214126]  9
-    @[57.64911  10.40744]     11
+    [57.64911   10.40744]     11
 ]
 
 loop tests [location, precision] [
