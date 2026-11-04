@@ -1,0 +1,51 @@
+data: {
+    des_system_lib   std synopsys std_cell_lib des_system_lib dw02 dw01 ramlib ieee
+    dw01             ieee dw01 dware gtech
+    dw02             ieee dw02 dware
+    dw03             std synopsys dware dw03 dw02 dw01 ieee gtech
+    dw04             dw04 ieee dw01 dware gtech
+    dw05             dw05 ieee dware
+    dw06             dw06 ieee dware
+    dw07             ieee dware
+    dware            ieee dware
+    gtech            ieee gtech
+    ramlib           std ieee
+    std_cell_lib     ieee std_cell_lib
+    synopsys
+}
+
+parseDependencies: function [str][
+    graph: #[]
+    loop split.lines strip str 'line [
+        words: split.words line
+        graph\[first words]: unique (drop words) -- first words
+    ]
+    loop unique flatten values graph 'dep [
+        unless key? graph dep -> graph\[dep]: []
+    ]
+    return graph
+]
+
+topologicalSort: function [graph][
+    result: []
+    while [(size result) < size graph][
+        ready: sort select keys graph 'lib ->
+            and? -> not? contains? result lib
+                 -> every? graph\[lib] 'dep -> contains? result dep
+
+        if empty? ready ->
+            return "un-orderable dependencies among: " ++ join.with: ", " sort (keys graph) -- result
+
+        'result ++ ready
+    ]
+    return result
+]
+
+compileOrder: topologicalSort parseDependencies data
+print ["Compile order:" join.with: ", " compileOrder]
+
+print ""
+print "Adding dw04 to the dependencies of dw01:"
+cyclic: parseDependencies data
+cyclic\dw01: cyclic\dw01 ++ "dw04"
+print topologicalSort cyclic
