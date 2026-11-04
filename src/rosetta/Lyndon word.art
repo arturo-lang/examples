@@ -1,0 +1,25 @@
+nextLyndon: function [word, n, alphabet][
+    x: new word
+    while [n > size x] -> 'x ++ word
+    x: slice x 0 dec n
+
+    while [and? -> not? empty? x
+                -> (last x) = last alphabet] ->
+        x: chop x
+
+    if empty? x -> return null
+    lastIndex: index alphabet to :string last x
+    return (chop x) ++ to :string alphabet\[inc lastIndex]
+]
+
+lyndonWords: function [n, alphabet][
+    result: []
+    word: to :string first alphabet
+    while [not? null? word][
+        'result ++ word
+        word: nextLyndon word n alphabet
+    ]
+    return result
+]
+
+print lyndonWords 5 "01"
