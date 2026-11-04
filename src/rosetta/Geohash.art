@@ -1,0 +1,57 @@
+base32: "0123456789bcdefghjkmnpqrstuvwxyz"
+
+encodeGeohash: function [location, precision][
+    ranges: @[@[neg 90.0 90.0] @[neg 180.0 180.0]]
+    hash: ""
+    bits: 0
+    current: 0
+    axis: 1
+    while [precision > size hash][
+        mid: (ranges\[axis]\0 + ranges\[axis]\1) / 2
+        current: 2 * current
+        switch location\[axis] > mid [
+            current: inc current
+            ranges\[axis]\0: mid
+        ] -> ranges\[axis]\1: mid
+        axis: 1 - axis
+        bits: inc bits
+        if bits = 5 [
+            'hash ++ base32\[current]
+            bits: 0
+            current: 0
+        ]
+    ]
+    hash
+]
+
+decodeGeohash: function [hash][
+    ranges: @[@[neg 90.0 90.0] @[neg 180.0 180.0]]
+    axis: 1
+    loop hash 'ch [
+        value: index base32 to :string ch
+        loop 4..0 'b [
+            mid: (ranges\[axis]\0 + ranges\[axis]\1) / 2
+            switch odd? shr value b
+                -> ranges\[axis]\0: mid
+                -> ranges\[axis]\1: mid
+            axis: 1 - axis
+        ]
+    ]
+    ranges
+]
+
+tests: @[
+    @[51.433718 neg 0.214126]  2
+    @[51.433718 neg 0.214126]  9
+    @[57.64911  10.40744]     11
+]
+
+loop tests [location, precision] [
+    hash: encodeGeohash location precision
+    print [
+        pad.right to :string location 24
+        "precision:" pad to :string precision 2
+        "->" hash
+    ]
+    print ["    decoded:" decodeGeohash hash]
+]
