@@ -1,0 +1,47 @@
+define :node [
+    init: constructor [value prev next]
+]
+
+define :list [
+    init: constructor [head tail]
+
+    addTail: method [value][
+        item: to :node @[value null null]
+        item\prev: \tail
+        switch null? \tail [ \head: item ]
+                           [ \tail\next: item ]
+        \tail: item
+    ]
+
+    insertAfter: method [node, value][
+        item: to :node @[value null null]
+        item\prev: node
+        item\next: node\next
+        switch null? node\next [ \tail: item ]
+                               [ node\next\prev: item ]
+        node\next: item
+    ]
+
+    chain: method [start, link][
+        items: []
+        current: start
+        while [not? null? current][
+            'items ++ current\value
+            current: current\[link]
+        ]
+        join.with:" <-> " items
+    ]
+
+    string: method [][
+        \chain \head "next"
+    ]
+]
+
+lst: to :list @[null null]!
+lst\addTail "A"
+lst\addTail "B"
+print ["Initial: " lst]
+
+lst\insertAfter lst\head "C"
+print ["Forward: " lst]
+print ["Backward:" lst\chain lst\tail "prev"]
