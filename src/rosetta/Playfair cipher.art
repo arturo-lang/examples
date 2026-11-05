@@ -1,0 +1,68 @@
+define :playfair [
+    init: method [key, omitted][
+        \omitted: omitted
+        \table: unique split \normalize key ++ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    ]
+
+    normalize: method [text][
+        letters: replace upper text {/[^A-Z]/} ""
+        (\omitted = "J")? -> replace letters "J" "I"
+                          -> replace letters "Q" ""
+    ]
+
+    digraphs: method [text][
+        letters: split \normalize text
+        result: []
+        i: 0
+        while [i < size letters][
+            a: letters\[i]
+            b: ((inc i) < size letters)? -> letters\[inc i] -> "X"
+            switch a = b [
+                'result ++ @[@[a "X"]]
+                i: inc i
+            ][
+                'result ++ @[@[a b]]
+                i: i + 2
+            ]
+        ]
+        result
+    ]
+
+    cell: method [row, col][
+        \table\[(5 * row % 5) + col % 5]
+    ]
+
+    transform: method [text, shift][
+        pairs: map \digraphs text 'pair [
+            [ra, ca]: (index \table pair\0) /% 5
+            [rb, cb]: (index \table pair\1) /% 5
+            when [
+                ra = rb -> (\cell ra ca + shift) ++ \cell rb cb + shift
+                ca = cb -> (\cell ra + shift ca) ++ \cell rb + shift cb
+                true    -> (\cell ra cb) ++ \cell rb ca
+            ]
+        ]
+        join.with:" " pairs
+    ]
+
+    encrypt: method [text][ \transform text 1 ]
+    decrypt: method [text][ \transform text 4 ]
+
+    string: method [][
+        join.with:"\n" map split.every: 5 \table 'row -> join.with:" " row
+    ]
+]
+
+text: "Hide the gold in...the TREESTUMP!!!"
+print ["Original: " text]
+
+loop ["J" "Q"] 'omitted [
+    cipher: to :playfair @["Playfair example" omitted]!
+    encrypted: cipher\encrypt text
+
+    print ""
+    print ["Without" omitted ++ ":"]
+    print cipher
+    print ["Encrypted:" encrypted]
+    print ["Decrypted:" cipher\decrypt encrypted]
+]
