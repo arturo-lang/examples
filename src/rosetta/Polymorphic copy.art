@@ -1,0 +1,12 @@
+define :t [
+    name: method [][ "T" ]
+]
+
+define :s is :t [
+    name: method [][ "S" ]
+]
+
+loop @[to :t [], to :s []] 'original [
+    copied: new original
+    print ["Copied" copied\name "- of type" type copied]
+]
