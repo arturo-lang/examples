@@ -1,0 +1,19 @@
+primes: select 2..999999 => prime?
+
+longestRun: function [cmp][
+    best: []
+    current: first.n: 2 primes
+    loop drop.times: 2 primes 'p [
+        gap: p - last current
+        lastGap: (last current) - current\[dec dec size current]
+        switch call 'cmp @[gap lastGap]
+            -> 'current ++ p
+            -> current: @[last current, p]
+        if (size current) > size best ->
+            best: new current
+    ]
+    best
+]
+
+print ["Ascending: " longestRun var 'greater?]
+print ["Descending:" longestRun var 'less?]
