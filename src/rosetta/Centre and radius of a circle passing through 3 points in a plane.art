@@ -1,0 +1,22 @@
+circleThrough: function [p1, p2, p3][
+    [x1, y1]: p1
+    [x2, y2]: p2
+    [x3, y3]: p3
+
+    d: 2 * ((x1 * y2 - y3) + (x2 * y3 - y1) + x3 * y1 - y2)
+    s1: (x1 * x1) + y1 * y1
+    s2: (x2 * x2) + y2 * y2
+    s3: (x3 * x3) + y3 * y3
+
+    cx: ((s1 * y2 - y3) + (s2 * y3 - y1) + s3 * y1 - y2) / d
+    cy: ((s1 * x3 - x2) + (s2 * x1 - x3) + s3 * x2 - x1) / d
+    r: sqrt ((x1 - cx) ^ 2) + (y1 - cy) ^ 2
+
+    @[cx cy r]
+]
+
+circle: circleThrough [22.83 2.07] [14.39 30.24] [33.65 17.31]
+[cx, cy, r]: map circle 'v -> to :string .format:".2f" v
+
+print ["Centre is at" ~"(|cx|, |cy|)"]
+print ["Radius is" r]
