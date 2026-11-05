@@ -1,0 +1,29 @@
+define :multiton [
+    init: constructor [name :string]
+    string: method [][
+        "This is Multiton " ++ upper \name
+    ]
+]
+
+instances: #[]
+allowed: ["zero" "one" "two"]
+
+getInstance: function [name][
+    ensure -> contains? allowed name
+    unless key? instances name ->
+        instances\[name]: to :multiton @[name]!
+    instances\[name]
+]
+
+alpha: getInstance "zero"
+beta:  getInstance "zero"
+gamma: getInstance "one"
+delta: getInstance "two"
+
+print alpha
+print beta
+print gamma
+print delta
+
+alpha\name: "zero (modified)"
+print ["beta's name is now:" beta\name]
