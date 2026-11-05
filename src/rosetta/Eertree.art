@@ -1,0 +1,47 @@
+define :node [
+    init: method [len, link][
+        \len: len
+        \link: link
+        \edges: #[]
+    ]
+]
+
+define :eertree [
+    init: method [s][
+        \letters: split s
+        \nodes: @[to :node @[neg 1 0], to :node [0 0]]
+
+        lastNode: 1
+        loop.with:'i \letters 'ch [
+            cur: \matching lastNode i
+            unless key? \nodes\[cur]\edges ch [
+                total: \nodes\[cur]\len + 2
+                suffix: (total = 1)? -> 1
+                                     -> \nodes\[\matching \nodes\[cur]\link i]\edges\[ch]
+                \nodes: \nodes ++ to :node @[total suffix]
+                \nodes\[cur]\edges\[ch]: dec size \nodes
+            ]
+            lastNode: \nodes\[cur]\edges\[ch]
+        ]
+    ]
+
+    matching: method [node, i][
+        j: i - inc \nodes\[node]\len
+        if and? j >= 0 -> \letters\[j] = \letters\[i] -> return node
+        \matching \nodes\[node]\link i
+    ]
+
+    walk: method [node, pal][
+        flatten map \nodes\[node]\edges [ch, child][
+            p: (node = 0)? -> ch
+                           -> ch ++ pal ++ ch
+            @[p \walk child p]
+        ]
+    ]
+
+    string: method [][
+        join.with:" " (\walk 1 "") ++ \walk 0 ""
+    ]
+]
+
+print to :eertree ["eertree"]!
