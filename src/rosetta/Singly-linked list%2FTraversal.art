@@ -1,0 +1,12 @@
+define :node [value next]
+
+fromBlock: function [items]->
+    fold.seed: null reverse items [following v] -> to :node @[v following]
+
+lst: fromBlock ["alpha" "beta" "gamma" "delta"]
+
+current: lst
+while [not? null? current][
+    print current\value
+    current: current\next
+]
