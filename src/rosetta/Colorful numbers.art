@@ -1,0 +1,36 @@
+number: function [ds]-> fold ds .seed: 0 [a b] -> (10 * a) + b
+
+colorful?: function [n][
+    if n < 10 -> return true
+    ds: digits n
+    if or? contains? ds 0 contains? ds 1 -> return false
+    products: []
+    loop 1..size ds 'len ->
+        loop 0..(size ds)-len 'start ->
+            'products ++ product slice ds start dec start + len
+    (size products) = size unique products
+]
+
+print "Colorful numbers below 100:"
+0..99 | select => colorful?
+      | split.every: 15
+      | loop 'row ->
+          print map row 'n -> pad to :string n 3
+
+counts: [10]
+largest: 9
+loop 2..8 'len [
+    found: permutate.by: len [2 3 4 5 6 7 8 9]
+         | map => number
+         | select => colorful?
+    'counts ++ size found
+    unless empty? found ->
+        largest: max found ++ largest
+]
+
+print ""
+print ["The largest possible colorful number is:" largest]
+print ""
+loop.with:'i counts 'c ->
+    print ["Colorful numbers with" inc i "digits:" c]
+print ["Total:" sum counts]
