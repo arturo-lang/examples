@@ -1,0 +1,23 @@
+posInf:     1.0e308 * 10.0
+negInf:     neg posInf
+negZero:    0.0 * neg 1.0
+notANumber: posInf - posInf
+
+print ["+inf:" posInf]
+print ["-inf:" negInf]
+print ["-0.0:" negZero]
+print ["NaN: " notANumber]
+print ""
+
+print ["directly entered:" infinite neg infinite]
+print ""
+
+print ["+inf + 1          =" posInf + 1]
+print ["+inf * -1         =" posInf * neg 1]
+print ["+inf = infinite   =" posInf = infinite]
+print ["-inf < -1.0e308   =" negInf < neg 1.0e308]
+print ["-0.0 = 0.0        =" negZero = 0.0]
+print ["NaN = NaN         =" notANumber = notANumber]
+print ["infinite? posInf  =" infinite? posInf]
+print ["1 / +inf          =" 1 // posInf]
+print ["1 / -inf          =" 1 // negInf]
