@@ -1,0 +1,79 @@
+define :matrix [
+    init: constructor [rows :block]
+
+    mul: method [that][
+        to :matrix @[
+            map \rows 'row ->
+                map 0..dec size first that\rows 'j ->
+                    sum map 0..dec size row 'k ->
+                        row\[k] * that\rows\[k]\[j]
+        ]!
+    ]
+
+    string: method [][
+        join.with:"\n" map \rows 'row ->
+            join.with:" " map row 'v ->
+                pad to :string .format:".5f" to :floating v 9
+    ]
+
+    identity: method [][
+        n: size \rows
+        to :matrix @[
+            map 0..dec n 'i ->
+                map 0..dec n 'j -> (i = j)? -> 1 -> 0
+        ]!
+    ]
+
+    pivotize: method [][
+        n: size \rows
+        p: \identity
+        loop 0..dec n 'j [
+            row: j
+            loop j..dec n 'i ->
+                if (abs \rows\[i]\[j]) > abs \rows\[row]\[j] -> row: i
+            if row <> j [
+                tmp:          p\rows\[j]
+                p\rows\[j]:   p\rows\[row]
+                p\rows\[row]: tmp
+            ]
+        ]
+        p
+    ]
+
+    lu: method [][
+        n: size \rows
+        l: array.of: @[n n] 0.0
+        u: array.of: @[n n] 0.0
+        p: \pivotize
+        a2: p * this
+
+        loop 0..dec n 'j [
+            l\[j]\[j]: 1.0
+            loop 0..j 'i [
+                s: sum map 0..i 'k ->
+                    (k < i)? -> u\[k]\[j] * l\[i]\[k] -> 0
+                u\[i]\[j]: a2\rows\[i]\[j] - s
+            ]
+            loop j..dec n 'i [
+                s: sum map 0..j 'k ->
+                    (k < j)? -> u\[k]\[j] * l\[i]\[k] -> 0
+                l\[i]\[j]: (a2\rows\[i]\[j] - s) // u\[j]\[j]
+            ]
+        ]
+        @[to :matrix @[l]! to :matrix @[u]! p]
+    ]
+]
+
+loop [
+    [[1 3 5] [2 4 7] [1 1 0]]
+    [[11 9 24 2] [1 5 2 6] [3 17 18 1] [2 5 7 1]]
+] 'rows [
+    a: to :matrix @[rows]!
+    [l, u, p]: a\lu
+    loop @["A:" a "L:" l "U:" u "P:" p] [title, m][
+        print title
+        print m
+        print ""
+    ]
+    print "----"
+]
