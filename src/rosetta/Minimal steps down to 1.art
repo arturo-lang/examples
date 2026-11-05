@@ -1,0 +1,62 @@
+minimalSteps: function [limit, divisors, subtractors][
+    steps: array.of: inc limit 0
+    how: array.of: inc limit ""
+    loop 2..limit 'n [
+        best: ∞
+        loop divisors 'd [
+            if zero? n % d [
+                k: inc steps\[n / d]
+                if k < best [
+                    best: k
+                    how\[n]: ~"/|d|"
+                ]
+            ]
+        ]
+        loop subtractors 's [
+            if n > s [
+                k: inc steps\[n - s]
+                if k < best [
+                    best: k
+                    how\[n]: ~"-|s|"
+                ]
+            ]
+        ]
+        steps\[n]: best
+    ]
+    #[steps: steps, how: how]
+]
+
+pathOf: function [n, table][
+    route: []
+    while [n > 1][
+        op: table\how\[n]
+        amount: to :integer drop op
+        n: (op\0 = '/')? -> n / amount -> n - amount
+        'route ++ op ++ "=>" ++ to :string n
+    ]
+    join.with:", " route
+]
+
+loop [
+    [2 3] [1]
+    [2 3] [2]
+] [divisors, subtractors][
+    print ["Divisors:" divisors "- Subtractors:" subtractors]
+    table: minimalSteps 20000 divisors subtractors
+    loop 1..10 'n ->
+        print [
+            "   " pad to :string n 2
+            "takes" table\steps\[n] "steps:"
+            pathOf n table
+        ]
+    loop [2000 20000] 'limit [
+        upto: slice table\steps 1 limit
+        most: max upto
+        which: select 1..limit 'n -> most = table\steps\[n]
+        print [
+            "    Up to" (to :string limit) ++ ","
+            "there are" size which "numbers taking" most "steps:" which
+        ]
+    ]
+    print ""
+]
