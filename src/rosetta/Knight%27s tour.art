@@ -1,0 +1,37 @@
+n: 8
+cells: 0..dec n
+
+offsets: @[
+    [1 2] [2 1] @[2 neg 1] @[1 neg 2]
+    @[neg 1 neg 2] @[neg 2 neg 1] @[neg 2 1] @[neg 1 2]
+]
+
+free: function [pos, visited][
+    targets: map offsets 'o -> @[pos\0 + o\0, pos\1 + o\1]
+    select targets 'p ->
+        and? -> and? in? p\0 cells in? p\1 cells
+             -> not? contains? visited p
+]
+
+knightsTour: function [start][
+    tour: @[start]
+    while [(n * n) > size tour][
+        options: free last tour tour
+        best: first arrange options 'p -> size free p tour
+        'tour ++ @[best]
+    ]
+    tour
+]
+
+label: function [pos]->
+    (to :string to :char 97 + pos\1) ++ to :string n - pos\0
+
+tour: knightsTour [0 0]
+print ["Starting at" label first tour]
+
+loop cells 'r ->
+    print map cells 'c -> pad to :string inc index tour @[r c] 3
+
+print ""
+loop split.every: 16 map tour => label 'row ->
+    print join.with:" " row
