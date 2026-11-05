@@ -1,0 +1,33 @@
+define :node [
+    init: constructor [value prev next]
+]
+
+define :list [
+    init: method [items][
+        \head: null
+        \tail: null
+        loop items 'value [
+            item: to :node @[value null null]
+            item\prev: \tail
+            switch null? \tail [ \head: item ]
+                               [ \tail\next: item ]
+            \tail: item
+        ]
+    ]
+
+    walk: method [start, link][
+        current: start
+        while [not? null? current][
+            print ["   " current\value]
+            current: current\[link]
+        ]
+    ]
+]
+
+lst: to :list [["one" "two" "three" "four"]]!
+
+print "From the beginning to the end:"
+lst\walk lst\head "next"
+
+print "From the end to the beginning:"
+lst\walk lst\tail "prev"
