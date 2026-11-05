@@ -1,0 +1,21 @@
+pure: function [x]-> @[x]
+
+bind: function [xs, f]->
+    fold.seed: [] xs [acc x][ acc ++ f x ]
+
+neighbours: function [x]-> @[dec x, x, inc x]
+stars: function [x]-> @[repeat "*" x]
+
+3 | pure
+  | bind var 'neighbours
+  | bind var 'stars
+  | print
+
+triples: function [n]->
+    bind @1..n function [a]->
+        bind @a..n function [b]->
+            bind @b..n function [c]->
+                (((a * a) + b * b) = c * c)? -> pure @[a b c] -> []
+
+loop triples 25 'triple ->
+    print triple
