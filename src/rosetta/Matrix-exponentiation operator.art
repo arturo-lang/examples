@@ -1,0 +1,44 @@
+define :matrix [
+    init: constructor [rows :block]
+
+    mul: method [that][
+        to :matrix @[
+            map \rows 'row ->
+                map 0..dec size first that\rows 'j ->
+                    sum map 0..dec size row 'k ->
+                        row\[k] * that\rows\[k]\[j]
+        ]!
+    ]
+
+    identity: method [][
+        n: size \rows
+        to :matrix @[
+            map 0..dec n 'i ->
+                map 0..dec n 'j -> (i = j)? -> 1 -> 0
+        ]!
+    ]
+
+    pow: method [n][
+        result: \identity
+        base: this
+        while [n > 0][
+            if odd? n -> result: result * base
+            base: base * base
+            n: shr n 1
+        ]
+        result
+    ]
+
+    string: method [][
+        join.with:"\n" map \rows 'row ->
+            join map row 'v -> pad to :string v 8
+    ]
+]
+
+m: to :matrix [[[3 2] [2 1]]]!
+
+loop [0 1 2 3 4 10] 'n [
+    print [n ":"]
+    print m ^ n
+    print ""
+]
