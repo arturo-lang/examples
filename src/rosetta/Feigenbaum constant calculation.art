@@ -1,0 +1,24 @@
+maxIt:  13
+maxItJ: 10
+a1: 1.0
+a2: 0.0
+d1: 3.2
+
+print " i       d"
+loop 2..maxIt 'i [
+    a: a1 + (a1 - a2) / d1
+    do.times: maxItJ [
+        x: 0.0
+        y: 0.0
+        do.times: shl 1 i [
+            y: 1.0 - 2.0 * y * x
+            x: a - x * x
+        ]
+        a: a - x / y
+    ]
+    d: (a1 - a2) / a - a1
+    print [pad to :string i 2 pad to :string .format:".8f" d 12]
+    d1: d
+    a2: a1
+    a1: a
+]
