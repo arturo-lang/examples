@@ -1,0 +1,19 @@
+define :dog [
+    init: constructor [name :string]
+
+    bark: method [times][
+        print [\name "says" join.with:" " repeat ["woof!"] times]
+    ]
+
+    describe: method [][
+        print ["I am" \name "the dog"]
+    ]
+]
+
+rex: to :dog ["Rex"]!
+
+rex\bark 2
+rex\describe
+
+dogCount: function [dogs]-> size dogs
+print ["Number of dogs:" dogCount @[rex]]
