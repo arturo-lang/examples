@@ -21,7 +21,7 @@ damerauLevenshtein: function [a, b][
     loop 1..la 'i [
         lastMatchCol: 0
         loop 1..lb 'j [
-            ch: to :string b\[dec j]
+            ch: b\[dec j]
             k: (key? lastRow ch)? -> lastRow\[ch] -> 0
             l: lastMatchCol
             cost: 1
@@ -36,7 +36,7 @@ damerauLevenshtein: function [a, b][
                 d\[k]\[l] + (i-k) + dec j-l
             ]
         ]
-        lastRow\[to :string a\[dec i]]: i
+        lastRow\[a\[dec i]]: i
     ]
     d\[inc la]\[inc lb]
 ]

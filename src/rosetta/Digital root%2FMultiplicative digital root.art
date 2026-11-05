@@ -21,14 +21,14 @@ loop [123321 7739 893 899998] 'n [
 print ""
 print "MDR: [n0..n4]"
 table: #[]
-loop 0..9 'r -> table\[to :string r]: []
+loop 0..9 'r -> table\[r]: []
 
 n: 0
 while [some? values table 'found -> 5 > size found][
-    root: to :string last mdr n
+    root: last mdr n
     if 5 > size table\[root] ->
         table\[root]: table\[root] ++ n
     n: n + 1
 ]
 loop 0..9 'r ->
-    print [pad to :string r 3 ":" table\[to :string r]]
+    print [pad to :string r 3 ":" table\[r]]

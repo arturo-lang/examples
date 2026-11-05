@@ -3,9 +3,9 @@ limit: 1000035
 primes: select 2..limit+6 => prime?
 primeSet: #[]
 loop primes 'p ->
-    primeSet\[to :string p]: true
+    primeSet\[p]: true
 
-isPrime?: function [n]-> key? primeSet to :string n
+isPrime?: function [n]-> key? primeSet n
 
 groupsOf: function [k][
     select primes 'p ->
