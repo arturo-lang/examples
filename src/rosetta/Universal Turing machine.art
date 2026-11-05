@@ -1,0 +1,68 @@
+moves: #[left: neg 1, stay: 0, right: 1]
+
+define :machine [
+    init: method [title, initial, final, blank, rows][
+        \title: title
+        \initial: initial
+        \final: final
+        \blank: blank
+        \rules: #[]
+        loop rows [state, seen, mark, shift, target] ->
+            \rules\[state ++ " " ++ seen]: @[mark, moves\[shift], target]
+    ]
+
+    run: method [input][
+        tape: new input
+        pos: 0
+        state: \initial
+        steps: 0
+        while [state <> \final][
+            if pos < 0 [
+                tape: @[\blank] ++ tape
+                pos: 0
+            ]
+            if pos = size tape -> 'tape ++ \blank
+            rule: \rules\[state ++ " " ++ tape\[pos]]
+            tape\[pos]: rule\0
+            pos: pos + rule\1
+            state: rule\2
+            steps: inc steps
+        ]
+        print [\title ":" join.with:" " tape "(after" steps "steps)"]
+    ]
+]
+
+incrementer: to :machine ["Simple incrementer" "q0" "qf" "B" [
+    "q0" "1" "1" "right" "q0"
+    "q0" "B" "1" "stay"  "qf"
+]]!
+
+beaver: to :machine ["Three-state busy beaver" "a" "halt" "0" [
+    "a" "0" "1" "right" "b"
+    "a" "1" "1" "left"  "c"
+    "b" "0" "1" "left"  "a"
+    "b" "1" "1" "right" "b"
+    "c" "0" "1" "left"  "b"
+    "c" "1" "1" "stay"  "halt"
+]]!
+
+sorter: to :machine ["Sorting machine" "A" "H" "0" [
+    "A" "1" "1" "right" "A"
+    "A" "2" "3" "right" "B"
+    "A" "0" "0" "left"  "E"
+    "B" "1" "1" "right" "B"
+    "B" "2" "2" "right" "B"
+    "B" "0" "0" "left"  "C"
+    "C" "1" "2" "left"  "D"
+    "C" "2" "2" "left"  "C"
+    "C" "3" "2" "left"  "E"
+    "D" "1" "1" "left"  "D"
+    "D" "2" "2" "left"  "D"
+    "D" "3" "1" "right" "A"
+    "E" "1" "1" "left"  "E"
+    "E" "0" "0" "right" "H"
+]]!
+
+incrementer\run ["1" "1" "1"]
+beaver\run []
+sorter\run ["2" "2" "2" "1" "2" "2" "1" "2" "1" "2" "1" "2" "1" "2"]
