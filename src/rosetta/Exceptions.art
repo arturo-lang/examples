@@ -1,0 +1,14 @@
+err: try -> throw "something went wrong"
+print ["Caught:" err\kind "-" err\message]
+
+myError: to :errorKind "MyError"
+err: try -> throw.as: myError "this is my own error"
+print ["Caught:" err\kind "-" err\message]
+
+err: try -> to :integer "not a number"
+print ["Caught:" err\kind]
+
+err: try -> to :integer "42"
+print ["No error:" null? err]
+
+print ["Does dividing by zero throw?" throws? -> 1 / 0]
