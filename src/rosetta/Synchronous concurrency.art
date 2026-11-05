@@ -1,0 +1,22 @@
+lines: channel 'lines
+total: channel 'total
+
+reader: do.async [
+    "input.txt" | read
+                | strip.end
+                | split.lines
+                | loop => [send lines &]
+    unplug lines
+    print ["Lines printed:" receive total]
+]
+
+printer: do.async [
+    n: 0
+    while [not? null? line: <= receive lines][
+        print line
+        n: inc n
+    ]
+    send total n
+]
+
+wait.all @[reader printer]
