@@ -1,0 +1,43 @@
+invert: function [matrix][
+    n: size matrix
+    m: map 0..dec n 'i ->
+        (to [:floating] matrix\[i]) ++ map 0..dec n 'j -> (i = j)? -> 1.0 -> 0.0
+
+    loop 0..dec n 'col [
+        pivot: col
+        loop col..dec n 'row ->
+            if (abs m\[row]\[col]) > abs m\[pivot]\[col] -> pivot: row
+        tmp:       m\[col]
+        m\[col]:   m\[pivot]
+        m\[pivot]: tmp
+
+        divisor: m\[col]\[col]
+        m\[col]: map m\[col] 'v -> v / divisor
+
+        loop 0..dec n 'row [
+            if row <> col [
+                factor: m\[row]\[col]
+                m\[row]: map couple m\[row] m\[col] 'p ->
+                    p\0 - factor * p\1
+            ]
+        ]
+    ]
+    map m 'row -> drop.times: n row
+]
+
+showMatrix: function [m]->
+    loop m 'row ->
+        print map row 'v ->
+            pad to :string .format:".5f" to :floating v 9
+
+loop @[
+    [[1 2 3] [4 1 6] [7 8 9]]
+    @[@[2 neg 1 0] @[neg 1 2 neg 1] @[0 neg 1 2]]
+] 'a [
+    print "Matrix:"
+    showMatrix a
+    print ""
+    print "Inverse:"
+    showMatrix invert a
+    print ""
+]
