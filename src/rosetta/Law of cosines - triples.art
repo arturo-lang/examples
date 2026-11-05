@@ -1,0 +1,14 @@
+loop @[
+     90 0
+     60 neg 1
+    120 1
+] [degrees, coeff][
+    triples: []
+    loop 1..13 'a ->
+        loop a..13 'b ->
+            loop 1..13 'c ->
+                if (c * c) = ((a * a) + b * b) + coeff * a * b ->
+                    'triples ++ @[@[a b c]]
+    print [pad to :string degrees 3 "degrees has" size triples "solutions:"]
+    print ["   " triples]
+]
