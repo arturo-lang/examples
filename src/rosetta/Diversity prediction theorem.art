@@ -1,0 +1,22 @@
+diversityTheorem: function [truth, estimates][
+    avg: average estimates
+    squared: function [x]-> x * x
+    @[
+        average map estimates 'e -> squared e - truth
+        squared avg - truth
+        average map estimates 'e -> squared e - avg
+    ]
+]
+
+loop [
+    49 [48 47 51]
+    49 [48 47 51 42]
+] [truth, estimates][
+    [avgError, crowdError, diversity]: diversityTheorem truth estimates
+
+    print ["true value:   " truth "  estimates:" estimates]
+    print ["average error:" avgError]
+    print ["crowd error:  " crowdError]
+    print ["diversity:    " diversity]
+    print ""
+]
