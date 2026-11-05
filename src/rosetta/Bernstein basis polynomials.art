@@ -1,0 +1,62 @@
+toBern2: function [a]-> @[a\0, a\0 + a\1 // 2, (a\0 + a\1) + a\2]
+
+toBern3: function [a]-> @[
+    a\0
+    a\0 + a\1 // 3
+    (a\0 + (2 * a\1) // 3) + a\2 // 3
+    ((a\0 + a\1) + a\2) + a\3
+]
+
+bern2to3: function [q]-> @[
+    q\0
+    (q\0 // 3) + (2 * q\1) // 3
+    ((2 * q\1) // 3) + q\2 // 3
+    q\2
+]
+
+evalBern: function [b, t][
+    while [1 < size b][
+        b: map 1..dec size b 'i ->
+            ((1 - t) * b\[dec i]) + t * b\[i]
+    ]
+    first b
+]
+
+evalMono: function [a, t]->
+    fold reverse a .seed: 0 [acc c] -> c + acc * t
+
+p2: [1 0 0]
+q2: [1 2 3]
+p3: [1 0 0 0]
+q3: [1 2 3 0]
+r3: [1 2 3 4]
+
+print "Subprogram (1) examples:"
+loop @[p2 q2] 'm -> print ["  mono" m "--> bern" toBern2 m]
+
+print "Subprogram (2) examples:"
+loop @["p" p2  "q" q2] [name, f] ->
+    loop [0.25 7.5] 'x ->
+        print [
+            ~"  |name|(|x|) ="
+            evalBern toBern2 f x
+            "  ( mono:" evalMono f x ")"
+        ]
+
+print "Subprogram (3) examples:"
+loop @[p3 q3 r3] 'm -> print ["  mono" m "--> bern" toBern3 m]
+
+print "Subprogram (4) examples:"
+loop @["p" p3  "q" q3  "r" r3] [name, f] ->
+    loop [0.25 7.5] 'x ->
+        print [
+            ~"  |name|(|x|) ="
+            evalBern toBern3 f x
+            "  ( mono:" evalMono f x ")"
+        ]
+
+print "Subprogram (5) examples:"
+loop @[p2 q2] 'm [
+    b: toBern2 m
+    print ["  bern" b "--> bern" bern2to3 b]
+]
