@@ -1,0 +1,20 @@
+items: [
+    ["hamburger" 4000000000000000 5.50`USD]
+    ["milkshake"                2 2.86`USD]
+]
+taxRate: 765:10000
+
+dollars: function [amount][
+    r: to :rational amount
+    n: numerator r
+    d: denominator r
+    cents: (d + 200 * n) / 2 * d
+    (to :string cents / 100) ++ "." ++ pad.with:'0' to :string cents % 100 2
+]
+
+subtotal: fold.seed: 0`USD items [total item] -> total + item\1 * item\2
+tax: subtotal * taxRate
+
+print ["Total price before tax:" pad dollars subtotal 22]
+print ["Tax:                   " pad dollars tax 22]
+print ["Total with tax:        " pad dollars subtotal + tax 22]
