@@ -1,0 +1,16 @@
+signal: event 'signal
+
+on signal [
+    print "Event received"
+]
+
+print "Waiting for the event"
+
+wait do.async [
+    pause 1000
+    print "Signaling the event"
+    emit signal
+]
+
+pause 1
+print "Done"
