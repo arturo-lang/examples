@@ -1,0 +1,30 @@
+withBit: function [bit, codes][
+    result: #[]
+    loop codes [symbol, code] -> result\[symbol]: bit ++ code
+    result
+]
+
+huffman: function [weights][
+    queue: map weights [symbol, weight] -> @[weight, #.raw @[symbol ""]]
+    while [1 < size queue][
+        queue: arrange queue 'node -> node\0
+        a: queue\0
+        b: queue\1
+        merged: extend withBit "0" a\1 withBit "1" b\1
+        queue: (drop.times: 2 queue) ++ @[@[a\0 + b\0, merged]]
+    ]
+    queue\0\1
+]
+
+text: "this is an example for huffman encoding"
+weights: tally split text
+codes: huffman weights
+
+print [pad.center "Symbol" 8 pad.center "Weight" 8 pad.center "Huffman code" 14]
+loop arrange keys codes 's -> neg weights\[s] 's ->
+    print [pad.center express s 8 pad.center to :string weights\[s] 8 pad.center pad.right codes\[s] 5 14]
+
+encoded: join map split text 'ch -> codes\[ch]
+print ""
+print ["Encoded:" encoded]
+print ["Bits:" size encoded "(instead of" (to :string 8 * size text) ++ ")"]
