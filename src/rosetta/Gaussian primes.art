@@ -1,0 +1,35 @@
+norm: function [z]-> (z\0 * z\0) + z\1 * z\1
+
+gaussianPrime?: function [z][
+    a: abs z\0
+    b: abs z\1
+    if zero? a -> return and? prime? b 3 = b % 4
+    if zero? b -> return and? prime? a 3 = a % 4
+    prime? norm z
+]
+
+showGaussian: function [z][
+    [a, b]: z
+    if zero? b -> return to :string a
+    imaginary: ((abs b) = 1)? -> "i" -> (to :string abs b) ++ "i"
+    if zero? a -> return ((negative? b)? -> "-" -> "") ++ imaginary
+    (to :string a) ++ ((negative? b)? -> "-" -> "+") ++ imaginary
+]
+
+candidates: []
+loop (neg 9)..9 'a ->
+    loop (neg 9)..9 'b ->
+        if 100 > norm @[a b] -> 'candidates ++ @[@[a b]]
+
+primes: candidates | select => gaussianPrime?
+                   | arrange => norm
+
+print "Gaussian primes with a norm below 100:"
+loop split.every: 10 primes 'row ->
+    print map row 'z -> pad.right showGaussian z 8
+
+print ""
+print "Plot of the Gaussian primes within a radius of 10:"
+loop 9..neg 9 'b ->
+    print join map (neg 9)..9 'a ->
+        (contains? primes @[a b])? -> " o" -> " ."
