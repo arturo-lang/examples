@@ -1,0 +1,14 @@
+n: 3
+
+items: array.of: n []
+'items\0 ++ "changed"
+print ["array.of:  " items]
+
+items: map 1..n 'x -> new []
+'items\1 ++ "changed"
+print ["map + new: " items]
+
+shared: []
+items: map 1..n 'x -> shared
+'shared ++ "changed"
+print ["shared:    " items]
