@@ -1,0 +1,20 @@
+settings: module [
+    init: method [][
+        \level: 5
+    ]
+
+    getVolume: method.public [][
+        \level
+    ]
+
+    setVolume: method.public [v][
+        \level: v
+    ]
+]
+
+export settings!
+
+print ["Volume:" getVolume]
+setVolume 11
+print ["Volume:" getVolume]
+print ["Is its state reachable from outside?" set? 'level]
