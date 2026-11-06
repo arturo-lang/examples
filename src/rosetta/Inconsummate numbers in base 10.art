@@ -1,0 +1,19 @@
+limit: 7000
+
+consummate: array.of: inc limit false
+loop 1..limit * 63 'n [
+    s: sum digits n
+    if zero? n % s [
+        q: n / s
+        if q =< limit -> consummate\[q]: true
+    ]
+]
+
+inconsummate: select 1..limit 'q -> not? consummate\[q]
+
+print "The first 50 inconsummate numbers in base 10:"
+loop split.every: 10 first.n: 50 inconsummate 'row ->
+    print map row 'x -> pad to :string x 6
+
+print ""
+print ["The thousandth inconsummate number:" inconsummate\999]
