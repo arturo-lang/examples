@@ -1,0 +1,29 @@
+found: [2 3 5 7]
+composites: []
+tests: 4
+
+queue: new found
+while [not? empty? queue][
+    p: first queue
+    queue: drop queue
+    lastDigit: p % 10
+    loop [3 7] 'd [
+        candidate: d + 10 * p
+        if and? d <> lastDigit
+                or? p < 10 contains? found d + 10 * lastDigit [
+            tests: inc tests
+            switch prime? candidate [
+                'found ++ candidate
+                'queue ++ candidate
+            ][
+                'composites ++ candidate
+            ]
+        ]
+    ]
+]
+
+print ["There are" size found "primes where all substrings are also primes:"]
+print ["   " sort found]
+print ""
+print ["Numbers tested and found to be composite:" sort composites]
+print ["Total number of primality tests:" tests]
