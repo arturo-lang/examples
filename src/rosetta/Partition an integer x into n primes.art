@@ -1,0 +1,31 @@
+findPrimes: function [x, n, candidates, from][
+    if n = 1 [
+        if and? prime? x x >= candidates\[from] -> return @[x]
+        return null
+    ]
+    i: from
+    while [and? i < size candidates (n * candidates\[i]) < x][
+        p: candidates\[i]
+        rest: findPrimes x - p dec n candidates inc i
+        unless null? rest -> return @[p] ++ rest
+        i: inc i
+    ]
+    null
+]
+
+partition: function [x, n][
+    primes: select 2..x => prime?
+    found:  findPrimes x n primes 0
+    noun:   (n = 1)? -> "prime :" -> "primes:"
+    result: (null? found)? -> "(not possible)"
+                           -> join.with:"+" to [:string] found
+    print ["Partitioned" pad to :string x 5 "with" pad to :string n 2 noun result]
+]
+
+partition 99809 1
+partition 18 2
+partition 19 3
+partition 20 4
+partition 2017 24
+loop 1..4 'n -> partition 22699 n
+partition 40355 3
