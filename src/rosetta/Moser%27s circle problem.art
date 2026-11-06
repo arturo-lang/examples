@@ -1,0 +1,16 @@
+quartic: function [n]->
+    ((((n^4) - 6 * n^3) + (23 * n^2) - 18 * n) + 24) / 24
+
+viaBinomials: function [n]->
+    (combine.count.by:4 @1..n) + (combine.count.by:2 @1..n) + 1
+
+byQuartic:   map 1..20 => quartic
+byBinomials: map 1..20 => viaBinomials
+
+print "The first 20 values of Moser's circle problem..."
+print ""
+print "... using the quartic formula:"
+print ["   " byQuartic]
+print ""
+print "... using binomial coefficients:"
+print ["   " byBinomials]
