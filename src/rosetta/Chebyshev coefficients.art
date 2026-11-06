@@ -1,0 +1,15 @@
+chebyshev: function [f, a, b, n][
+    bma: 0.5 * b - a
+    bpa: 0.5 * b + a
+    samples: map 0..dec n 'k ->
+        call 'f @[(bma * cos pi * (k + 0.5) / n) + bpa]
+    map 0..dec n 'j ->
+        (2.0 / n) * sum map 0..dec n 'k ->
+            samples\[k] * cos pi * j * (k + 0.5) / n
+]
+
+coeffs: chebyshev var 'cos 0.0 1.0 10
+
+print "Chebyshev coefficients of cos(x) on [0, 1]:"
+loop coeffs 'c ->
+    print pad to :string .format:".10f" c 15
