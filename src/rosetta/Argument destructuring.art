@@ -1,0 +1,12 @@
+volume: function [length, width, height]->
+    length * width * height
+
+args: [2 3 4]
+print ["volume via call:" call 'volume args]
+
+named: #[height: 4, length: 2, width: 3]
+ordered: map ["length" "width" "height"] 'k -> named\[k]
+print ["volume via dictionary:" call 'volume ordered]
+
+[l, w, h]: args
+print ["destructured:" l w h "->" volume l w h]
