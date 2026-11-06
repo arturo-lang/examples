@@ -1,0 +1,57 @@
+The first 25 2 -smooth numbers are: 
+1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216 
+
+The first 25 3 -smooth numbers are: 
+1 2 3 4 6 8 9 12 16 18 24 27 32 36 48 54 64 72 81 96 108 128 144 162 192 
+
+The first 25 5 -smooth numbers are: 
+1 2 3 4 5 6 8 9 10 12 15 16 18 20 24 25 27 30 32 36 40 45 48 50 54 
+
+The first 25 7 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 12 14 15 16 18 20 21 24 25 27 28 30 32 35 36 
+
+The first 25 11 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 11 12 14 15 16 18 20 21 22 24 25 27 28 30 32 
+
+The first 25 13 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 18 20 21 22 24 25 26 27 28 
+
+The first 25 17 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 20 21 22 24 25 26 27 
+
+The first 25 19 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26 
+
+The first 25 23 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 
+
+The first 25 29 -smooth numbers are: 
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 
+
+The 3,000th to 3,002nd 3 -smooth numbers are: 
+91580367978306252441724649472 92829823186414819915547541504 94096325042746502515294076928 
+
+The 3,000th to 3,002nd 5 -smooth numbers are: 
+278942752080 279936000000 281250000000 
+
+The 3,000th to 3,002nd 7 -smooth numbers are: 
+50176000 50331648 50388480 
+
+The 3,000th to 3,002nd 11 -smooth numbers are: 
+2112880 2116800 2117016 
+
+The 3,000th to 3,002nd 13 -smooth numbers are: 
+390000 390390 390625 
+
+The 3,000th to 3,002nd 17 -smooth numbers are: 
+145800 145860 146016 
+
+The 3,000th to 3,002nd 19 -smooth numbers are: 
+74256 74358 74360 
+
+The 3,000th to 3,002nd 23 -smooth numbers are: 
+46552 46575 46585 
+
+The 3,000th to 3,002nd 29 -smooth numbers are: 
+33516 33524 33534 
+

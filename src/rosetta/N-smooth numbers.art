@@ -1,0 +1,27 @@
+smooth: function [n, count][
+    ps: select 2..n => prime?
+    h: [1]
+    idx: array.of: size ps 0
+    while [count > size h][
+        candidates: map.with:'i ps 'p -> p * h\[idx\[i]]
+        nxt: min candidates
+        'h ++ nxt
+        loop 0..dec size ps 'i ->
+            if candidates\[i] = nxt -> idx\[i]: inc idx\[i]
+    ]
+    h
+]
+
+primes: select 2..29 => prime?
+
+loop primes 'n [
+    print ["The first 25" n "-smooth numbers are:"]
+    print smooth n 25
+    print ""
+]
+
+loop drop primes 'n [
+    print ["The 3,000th to 3,002nd" n "-smooth numbers are:"]
+    print last.n: 3 smooth n 3002
+    print ""
+]
