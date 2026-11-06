@@ -1,0 +1,49 @@
+fromHex: function [s]->
+    fold lower s .seed: 0 [acc ch] -> (16 * acc) + index "0123456789abcdef" to :string ch
+
+hex: function [n, width]->
+    pad.with:'0' upper to :string .format:".x" n width
+
+parseIPv4: function [s]->
+    join map split.by:"." s 'octet -> hex to :integer octet 2
+
+parseIPv6: function [s][
+    groups: split.by:":" s
+    if contains? s "::" [
+        [left, right]: split.by:"::" s
+        lgroups: (empty? left)? -> [] -> split.by:":" left
+        rgroups: (empty? right)? -> [] -> split.by:":" right
+        missing: (8 - size lgroups) - size rgroups
+        groups: lgroups ++ (repeat ["0"] missing) ++ rgroups
+    ]
+    join map groups 'g -> lower hex fromHex g 4
+]
+
+parseAddress: function [str][
+    port: null
+    address: str
+    if prefix? str "[" [
+        parts: split.by:"]:" drop str
+        address: parts\0
+        port: parts\1
+    ]
+    if and? contains? str "." contains? str ":" [
+        parts: split.by:":" str
+        address: parts\0
+        port: parts\1
+    ]
+    hexed: (contains? address ".")? -> parseIPv4 address -> parseIPv6 address
+    (null? port)? -> hexed -> hexed ++ " port : " ++ port
+]
+
+addresses: [
+    "127.0.0.1"
+    "127.0.0.1:80"
+    "::1"
+    "[::1]:80"
+    "2605:2700:0:3::4713:93e3"
+    "[2605:2700:0:3::4713:93e3]:80"
+]
+
+loop addresses 'addr ->
+    print [pad.right addr 32 ">" parseAddress addr]
