@@ -1,0 +1,32 @@
+mask64: (2 ^ 64) - 1
+mask32: (2 ^ 32) - 1
+multiplier: 6364136223846793005
+
+define :pcg32 [
+    init: method [seed, sequence][
+        \increment: and (or (shl.safe sequence 1) 1) mask64
+        \state: and ((\increment + seed) * multiplier) + \increment mask64
+    ]
+    nextInt: method [][
+        old: \state
+        \state: and (old * multiplier) + \increment mask64
+        shifted: and (shr (xor (shr old 18) old) 27) mask32
+        rot: to :integer to :string shr old 59
+        and (or (shr shifted rot) shl.safe shifted and (32 - rot) 31) mask32
+    ]
+    nextFloat: method []->
+        (to :floating to :string \nextInt) // 4294967296.0
+]
+
+rng: to :pcg32 [42 54]!
+do.times: 5 ->
+    print rng\nextInt
+
+rng: to :pcg32 [987654321 1]!
+counts: array.of: 5 0
+do.times: 100000 [
+    i: floor 5 * rng\nextFloat
+    counts\[i]: inc counts\[i]
+]
+print ""
+print ["Distribution of floor(5 * nextFloat) over 100,000 values:" counts]
