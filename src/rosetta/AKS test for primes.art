@@ -1,0 +1,30 @@
+expansion: function [p][
+    coeffs: [1]
+    do.times: p ->
+        coeffs: map 0..size coeffs 'i [
+            left:  (i > 0)? -> coeffs\[dec i] -> 0
+            right: (i < size coeffs)? -> neg coeffs\[i] -> 0
+            left + right
+        ]
+    coeffs
+]
+
+showPolynomial: function [coeffs]->
+    join.with:" " map.with:'i coeffs 'c [
+        sgn:  (negative? c)? -> "-" -> "+"
+        term: (zero? i)? -> "" -> "x^" ++ to :string i
+        sgn ++ (to :string abs c) ++ term
+    ]
+
+aksPrime?: function [p][
+    if p < 2 -> return false
+    coeffs: expansion p
+    every? 1..dec p 'i -> zero? coeffs\[i] % p
+]
+
+print "(x-1)^p for small p:"
+loop 0..7 'p ->
+    print [pad to :string p 3 ":" showPolynomial expansion p]
+
+print ""
+print ["Primes below 50 according to the AKS test:" select 1..49 => aksPrime?]
