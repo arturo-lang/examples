@@ -1,0 +1,31 @@
+mask64: (2 ^ 64) - 1
+mask32: (2 ^ 32) - 1
+
+define :xorshiftStar [
+    init: method [seed][
+        \state: and seed mask64
+    ]
+    nextInt: method [][
+        x: \state
+        x: xor x shr x 12
+        x: and (xor x shl.safe x 25) mask64
+        x: xor x shr x 27
+        \state: x
+        and (shr (and x * 2685821657736338717 mask64) 32) mask32
+    ]
+    nextFloat: method []->
+        (to :floating to :string \nextInt) // 4294967296.0
+]
+
+rng: to :xorshiftStar [1234567]!
+do.times: 5 ->
+    print rng\nextInt
+
+rng: to :xorshiftStar [987654321]!
+counts: array.of: 5 0
+do.times: 100000 [
+    i: floor 5 * rng\nextFloat
+    counts\[i]: inc counts\[i]
+]
+print ""
+print ["Distribution of floor(5 * nextFloat) over 100,000 values:" counts]
