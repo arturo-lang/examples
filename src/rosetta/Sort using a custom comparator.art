@@ -1,0 +1,14 @@
+define :entry [
+    init: constructor [s :string]
+
+    compare: method [that][
+        if (size \s) <> size that\s ->
+            return compare size that\s size \s
+        compare lower \s lower that\s
+    ]
+]
+
+strings: ["Here" "are" "some" "sample" "strings" "to" "be" "sorted"]
+
+sorted: sort map strings 's -> to :entry @[s]!
+print map sorted 'w -> w\s
