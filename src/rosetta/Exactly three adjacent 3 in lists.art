@@ -1,0 +1,16 @@
+exactlyThreeAdjacent?: function [xs][
+    windows: map 0..(size xs) - 3 'i -> xs\[i..i+2]
+    and? 3 = enumerate xs => [3 = &]
+         contains? windows [3 3 3]
+]
+
+tests: [
+    [9 3 3 3 2 1 7 8 5]
+    [5 2 9 3 3 7 8 4 1]
+    [1 4 3 6 7 3 8 3 2]
+    [1 2 3 4 5 6 7 8 9]
+    [4 6 8 7 2 3 3 3 1]
+]
+
+loop tests 'xs ->
+    print [xs "->" exactlyThreeAdjacent? xs]
