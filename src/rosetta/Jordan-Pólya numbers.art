@@ -1,0 +1,24 @@
+limit: 10^8
+factorials: 2..12 | map => factorial
+                  | select => [& =< limit]
+
+found: [1]
+frontier: [1]
+while [not? empty? frontier][
+    nextOnes: []
+    loop frontier 'x ->
+        loop factorials 'f [
+            y: x * f
+            if and? y =< limit not? contains? found y [
+                'found ++ y
+                'nextOnes ++ y
+            ]
+        ]
+    frontier: nextOnes
+]
+found: sort found
+
+print "The first 50 Jordan-Pólya numbers:"
+print first.n: 50 found
+print ""
+print ["The largest Jordan-Pólya number below 100 million:" last select found => [& < limit]]
