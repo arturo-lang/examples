@@ -1,0 +1,16 @@
+server: listen 12321
+print "Echo server listening on port 12321"
+
+while [true][
+    client: accept server
+    print ["Connection from" client]
+    session: do.async [
+        line: receive client
+        while [not? empty? line][
+            send client line
+            line: receive client
+        ]
+        print ["Closed" client]
+        unplug client
+    ]
+]
