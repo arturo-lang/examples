@@ -1,0 +1,32 @@
+define :mutex [
+    init: method [][
+        \slot: channel.bounded: 1 'mutex
+    ]
+    seize: method [][
+        send \slot true
+    ]
+    release: method [][
+        receive \slot
+    ]
+]
+
+increments: function [guarded][
+    lock: to :mutex []!
+    counter: #[value: 0]
+    workers: map 1..3 'id ->
+        do.async [
+            do.times: 2 [
+                if guarded -> lock\seize
+                current: counter\value
+                pause 20`ms
+                counter\value: inc current
+                if guarded -> lock\release
+                pause 5`ms
+            ]
+            counter\value
+        ]
+    max wait.all workers
+]
+
+print ["Without the mutex, 3 workers x 2 increments give:" increments false]
+print ["With the mutex,    3 workers x 2 increments give:" increments true]
