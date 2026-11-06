@@ -1,0 +1,24 @@
+klarnerRado: function [count][
+    k: [1]
+    i2: 0
+    i3: 0
+    while [count > size k][
+        a: 1 + 2 * k\[i2]
+        b: 1 + 3 * k\[i3]
+        nxt: min @[a b]
+        'k ++ nxt
+        if a = nxt -> i2: inc i2
+        if b = nxt -> i3: inc i3
+    ]
+    k
+]
+
+k: klarnerRado 100000
+
+print "The first 100 Klarner-Rado numbers:"
+loop split.every: 20 first.n: 100 k 'row ->
+    print map row 'x -> pad to :string x 4
+
+print ""
+loop [1000 10000 100000] 'n ->
+    print ["The" n "th Klarner-Rado number is" k\[dec n]]
