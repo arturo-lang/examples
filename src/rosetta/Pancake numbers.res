@@ -1,0 +1,8 @@
+p(1) = 0   example: [1] 
+p(2) = 1   example: [2 1] 
+p(3) = 3   example: [1 3 2] 
+p(4) = 4   example: [4 2 3 1] 
+p(5) = 5   example: [5 1 3 2 4] 
+p(6) = 7   example: [5 3 6 1 4 2] 
+p(7) = 8   example: [6 2 4 1 7 3 5] 
+p(8) = 9   example: [1 3 2 4 6 8 5 7] 
