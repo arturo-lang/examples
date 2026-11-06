@@ -1,0 +1,21 @@
+juggler: function [a][
+    steps: 0
+    highest: a
+    highestAt: 0
+    while [a <> 1][
+        a: (even? a)? -> sqrt.integer a -> sqrt.integer a * a * a
+        steps: inc steps
+        if a > highest [
+            highest: a
+            highestAt: steps
+        ]
+    ]
+    @[steps highest highestAt]
+]
+
+print " n   l[n]            h[n]  i[n]"
+print "-------------------------------"
+loop 20..39 'n [
+    [l, h, i]: juggler n
+    print [pad to :string n 2 pad to :string l 5 pad to :string h 15 pad to :string i 5]
+]
