@@ -1,0 +1,25 @@
+limit: 1000000
+
+phi: @0..limit
+loop 2..limit 'p [
+    if p = phi\[p] ->
+        loop range.step: p p limit 'k ->
+            phi\[k]: phi\[k] - phi\[k] / p
+]
+
+terms: [0]
+pairs: 0
+coprime: 0
+loop 2..limit 'n [
+    pairs: pairs + n - 2
+    if n > 2 -> coprime: coprime + phi\[n] - 1
+    'terms ++ pairs - coprime
+]
+
+print "The first 100 terms:"
+loop split.every: 10 first.n: 100 terms 'row ->
+    print map row 'x -> pad to :string x 6
+
+print ""
+loop [1000 10000 100000 1000000] 'n ->
+    print [~"a(|n|) =" terms\[dec n]]
