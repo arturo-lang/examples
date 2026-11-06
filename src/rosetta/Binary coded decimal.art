@@ -1,0 +1,18 @@
+toDecimal: function [bcd]->
+    digits digits.base:16 bcd
+
+toBCD: function [n]->
+    digits.base:16 digits n
+
+bcdAdd: function [a, b]->
+    toBCD (toDecimal a) + toDecimal b
+
+bcdSub: function [a, b]->
+    toBCD (toDecimal a) - toDecimal b
+
+hex: function [n]->
+    "0x" ++ pad.with:'0' to :string .format:".x" n 2
+
+print [hex 0x19 "+ 0x01 =" hex bcdAdd 0x19 1]
+print [hex 0x30 "- 0x01 =" hex bcdSub 0x30 1]
+print [hex 0x99 "+ 0x01 =" hex bcdAdd 0x99 1]
