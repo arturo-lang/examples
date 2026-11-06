@@ -1,0 +1,15 @@
+fs: function [f, s]-> map s 'x -> call f @[x]
+
+f1: function [n]-> n * 2
+f2: function [n]-> n * n
+
+partial: function [f, arg]->
+    function.import:[f arg] [x]-> call f @[arg, x]
+
+fsf1: partial 'fs 'f1
+fsf2: partial 'fs 'f2
+
+loop [[0 1 2 3] [2 4 6 8]] 's [
+    print ["fsf1" s "=" call 'fsf1 @[s]]
+    print ["fsf2" s "=" call 'fsf2 @[s]]
+]
