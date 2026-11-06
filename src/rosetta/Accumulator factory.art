@@ -1,0 +1,16 @@
+accumulator: function [n][
+    state: #[total: n]
+    function.import:[state] [i][
+        state\total: state\total + i
+        state\total
+    ]
+]
+
+x: accumulator 1
+call 'x [5]
+accumulator 3
+print call 'x [2.3]
+
+y: accumulator 10
+print call 'y [5]
+print call 'y [1]

@@ -1,0 +1,29 @@
+powers: function [m][
+    state: #[n: 0]
+    function.import:[state m] [][
+        v: state\n ^ m
+        state\n: inc state\n
+        v
+    ]
+]
+
+filtered: function [g, f][
+    state: #[ahead: call 'g []]
+    function.import:[state g f] [][
+        while [true][
+            v: call 'g []
+            while [state\ahead < v] -> state\ahead: call 'f []
+            if state\ahead <> v -> return v
+        ]
+    ]
+]
+
+squares: powers 2
+cubes: powers 3
+squaresNotCubes: filtered squares cubes
+
+do.times: 20 ->
+    call 'squaresNotCubes []
+
+firstTen: map 1..10 'x -> call 'squaresNotCubes []
+print firstTen

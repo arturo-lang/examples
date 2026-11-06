@@ -1,0 +1,14 @@
+roundRobin: function [n][
+    players: @1..n
+    if odd? n -> 'players ++ "bye"
+    count: size players
+    loop 1..dec count 'round [
+        print ["Round" round]
+        loop 0..dec count / 2 'i ->
+            print [pad to :string players\[i] 3 "v" players\[dec count - i]]
+        print ""
+        players: @[first players, last players] ++ players\[1..count - 2]
+    ]
+]
+
+roundRobin 12

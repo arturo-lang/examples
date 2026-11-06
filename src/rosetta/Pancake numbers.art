@@ -1,0 +1,34 @@
+flip: function [pile, k]->
+    (reverse pile\[0..dec k]) ++ drop.times: k pile
+
+keyOf: function [pile]->
+    join.with:"," to [:string] pile
+
+pancake: function [n][
+    start: @1..n
+    if n = 1 -> return @[0 start]
+    seen: #[]
+    seen\[keyOf start]: true
+    level: @[start]
+    flips: 0
+    while [true][
+        nextLevel: []
+        loop level 'pile ->
+            loop 2..n 'k [
+                flipped: flip pile k
+                key: keyOf flipped
+                unless key? seen key [
+                    seen\[key]: true
+                    'nextLevel ++ @[flipped]
+                ]
+            ]
+        if empty? nextLevel -> return @[flips first level]
+        level: nextLevel
+        flips: inc flips
+    ]
+]
+
+loop 1..8 'n [
+    [flips, example]: pancake n
+    print [~"p(|n|) =" flips "  example:" example]
+]

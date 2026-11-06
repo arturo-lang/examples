@@ -1,0 +1,36 @@
+trailing: function [cp, shift]-> or 0x80 and shr cp shift 0x3F
+
+encode: function [cp][
+    when.has: cp [
+        [< 0x80]    -> @[cp]
+        [< 0x800]   -> @[or 0xC0 shr cp 6, trailing cp 0]
+        [< 0x10000] -> @[or 0xE0 shr cp 12, trailing cp 6, trailing cp 0]
+        true        -> @[or 0xF0 shr cp 18, trailing cp 12, trailing cp 6, trailing cp 0]
+    ]
+]
+
+decode: function [bytes][
+    lead: first bytes
+    start: when.has: lead [
+        [< 0x80] -> lead
+        [< 0xE0] -> and lead 0x1F
+        [< 0xF0] -> and lead 0x0F
+        true     -> and lead 0x07
+    ]
+    fold drop bytes .seed: start [acc b] -> or shl acc 6 and b 0x3F
+]
+
+hex: function [n, width]-> upper pad.with:'0' to :string .format:".x" n width
+
+row: function [character, unicode, encoded, decoded][
+    print [pad.right character 10 pad.right unicode 10 pad.right encoded 22 decoded]
+]
+
+row "Character" "Unicode" "UTF-8 encoding (hex)" "Decoded"
+loop [0x41 0xF6 0x416 0x20AC 0x1D11E] 'cp [
+    bytes: encode cp
+    row to :string to :char cp
+        "U+" ++ hex cp 4
+        join.with:" " map bytes 'b -> hex b 2
+        to :string to :char decode bytes
+]

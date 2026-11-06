@@ -1,0 +1,21 @@
+tenants: ["Baker" "Cooper" "Fletcher" "Miller" "Smith"]
+
+adjacent?: function [a, b]-> 1 = abs a - b
+
+rules: [
+    [Baker <> 5]
+    [Cooper <> 1]
+    [not? in? Fletcher [1 5]]
+    [Miller > Cooper]
+    [not? adjacent? Smith Fletcher]
+    [not? adjacent? Fletcher Cooper]
+]
+
+loop permutate @1..5 'floors [
+    loop couple tenants floors 'pair ->
+        let pair\0 pair\1
+
+    if every? rules => do ->
+        loop couple tenants floors 'pair ->
+            print [pad.right pair\0 8 "lives on floor" pair\1]
+]

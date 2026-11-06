@@ -1,0 +1,32 @@
+shorter: function [a, b]->
+    ((size a) =< size b)? -> a -> b
+
+shortestCommonSupersequence: function [u, v][
+    m: size u
+    n: size v
+    table: map 0..m 'i -> map 0..n 'j -> ""
+
+    extend: function [i, j][
+        a: to :string u\[i]
+        b: to :string v\[j]
+        if a = b -> return a ++ table\[inc i]\[inc j]
+        shorter a ++ table\[inc i]\[j]
+                b ++ table\[i]\[inc j]
+    ]
+
+    loop m..0 'i ->
+        loop n..0 'j [
+            table\[i]\[j]: when [
+                i = m -> drop.times: j v
+                j = n -> drop.times: i u
+                true  -> extend i j
+            ]
+        ]
+
+    table\0\0
+]
+
+u: "abcbdab"
+v: "bdcaba"
+scs: shortestCommonSupersequence u v
+print ["Shortest common supersequence of" u "and" v "is:" scs]

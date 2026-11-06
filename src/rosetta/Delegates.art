@@ -1,0 +1,26 @@
+define :delegator [
+    init: constructor [delegate]
+
+    operation: method [][
+        hasThing: and? -> not? null? \delegate
+                       -> contains? methods \delegate "thing"
+        hasThing ? -> do [\delegate\thing]
+                   -> "default implementation"
+    ]
+]
+
+define :emptyDelegate [
+    other: method [][ "something else" ]
+]
+
+define :thingDelegate [
+    thing: method [][ "delegate implementation" ]
+]
+
+noDelegate: to :delegator @[null]!
+emptyOne:   to :delegator @[to :emptyDelegate []!]!
+withThing:  to :delegator @[to :thingDelegate []!]!
+
+print ["No delegate           :" noDelegate\operation]
+print ["Delegate with no thing:" emptyOne\operation]
+print ["Delegate with a thing :" withThing\operation]

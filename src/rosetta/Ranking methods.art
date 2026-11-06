@@ -1,0 +1,28 @@
+scores: [
+    [44 "Solomon"]
+    [42 "Jason"]
+    [42 "Errol"]
+    [41 "Garry"]
+    [41 "Bernard"]
+    [41 "Barry"]
+    [39 "Stephen"]
+]
+points: map scores => first
+
+standard:   function [s]-> inc enumerate points 'p -> p > s
+modified:   function [s]-> enumerate points 'p -> p >= s
+dense:      function [s]-> inc size unique select points 'p -> p > s
+fractional: function [s]-> (to :floating (standard s) + modified s) / 2
+
+showRanking: function [title, ranks][
+    print title
+    loop flatten couple ranks scores [rank, score, player] ->
+        print [pad to :string rank 5 " " score player]
+    print ""
+]
+
+showRanking "Standard ranking:"   map points => standard
+showRanking "Modified ranking:"   map points => modified
+showRanking "Dense ranking:"      map points => dense
+showRanking "Ordinal ranking:"    @1..size points
+showRanking "Fractional ranking:" map points => fractional

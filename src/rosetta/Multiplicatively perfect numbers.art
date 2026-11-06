@@ -1,0 +1,13 @@
+multiplicativelyPerfect?: function [n]->
+    n = product select factors n 'd -> d < n
+
+perfect: select 1..499 => multiplicativelyPerfect?
+print "Multiplicatively perfect numbers below 500:"
+loop split.every: 10 perfect 'row ->
+    print map row 'n -> pad to :string n 4
+
+print ""
+loop [500 5000 50000] 'limit [
+    count: enumerate 1..dec limit => multiplicativelyPerfect?
+    print ["Count below" pad to :string limit 6 ":" count]
+]

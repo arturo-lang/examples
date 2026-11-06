@@ -1,0 +1,23 @@
+bernoulli: function [n][
+    a: []
+    loop 0..n 'm [
+        'a ++ to :rational @[1 inc m]
+        if m > 0 [
+            loop m..1 'j ->
+                a\[dec j]: j * a\[dec j] - a\[j]
+        ]
+    ]
+    a\0
+]
+
+faulhaberRow: function [p][
+    coeffs: map 0..p 'j ->
+        (to :rational @[combine.count.by:j @1..inc p, inc p]) * bernoulli j
+    reverse coeffs
+]
+
+show: function [r]->
+    (1 = denominator r)? -> to :string numerator r -> to :string r
+
+loop 0..9 'p ->
+    print map faulhaberRow p 'c -> pad show c 7

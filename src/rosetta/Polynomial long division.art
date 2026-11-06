@@ -1,0 +1,46 @@
+degree: function [p][
+    nonZero: select 0..dec size p 'i -> not? zero? p\[i]
+    (empty? nonZero)? -> neg 1 -> last nonZero
+]
+
+polyDivide: function [n, d][
+    ensure -> 0 =< degree d
+
+    num: to [:floating] n
+    quotient: array.of: size n 0
+    while [(degree num) >= degree d][
+        top: degree num
+        shift: top - degree d
+        factor: num\[top] / d\[degree d]
+        quotient\[shift]: factor
+        loop 0..degree d 'i ->
+            num\[i + shift]: num\[i + shift] - factor * d\[i]
+        num\[top]: 0.0
+    ]
+    return @[quotient, num]
+]
+
+polyToString: function [p][
+    if 0 > degree p -> return "0"
+
+    terms: []
+    loop (degree p)..0 'i [
+        c: p\[i]
+        unless zero? c ->
+            'terms ++ case i [
+                0   -> to :string c
+                1   -> ~"|c|x"
+                any -> ~"|c|x^|i|"
+            ]
+    ]
+    join.with: " + " terms
+]
+
+N: @[neg 42, 0, neg 12, 1]
+D: @[neg 3, 1]
+
+[q, r]: polyDivide N D
+print ["  N =" polyToString N]
+print ["  D =" polyToString D]
+print ["  q =" polyToString q]
+print ["  r =" polyToString r]

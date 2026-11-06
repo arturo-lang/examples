@@ -1,0 +1,40 @@
+T: function [i]-> s\[dec i]
+countTrue: function [indexes]-> enumerate indexes 'i -> T i
+
+statements: [
+    [true]
+    [3 = countTrue 7..12]
+    [2 = countTrue [2 4 6 8 10 12]]
+    [or? not? T 5 and? T 6 T 7]
+    [zero? countTrue 2..4]
+    [4 = countTrue [1 3 5 7 9 11]]
+    [xor? T 2 T 3]
+    [or? not? T 7 and? T 5 T 6]
+    [3 = countTrue 1..6]
+    [and? T 11 T 12]
+    [1 = countTrue 7..9]
+    [4 = countTrue 1..11]
+]
+
+print "Solutions:"
+nearMisses: []
+
+loop 0..dec 2^12 'n [
+    s: map 0..11 'b -> odd? shr n b
+    evaluated: map statements => do
+    wrong: select 1..12 'i -> (T i) <> evaluated\[dec i]
+
+    trueOnes: select 1..12 => T
+    case size wrong [
+        0 -> print ["  statements" trueOnes "are true"]
+        1 -> 'nearMisses ++ @[trueOnes, first wrong]
+    ]
+]
+
+print ""
+print "Near misses:"
+loop nearMisses [trues, culprit] ->
+    print [
+        "  statements" trues "are true -"
+        "contradicted by statement" culprit
+    ]

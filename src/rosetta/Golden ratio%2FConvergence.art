@@ -1,0 +1,10 @@
+phi: 1.0
+iterations: 0
+until [
+    previous: phi
+    phi: 1 + 1 / phi
+    iterations: inc iterations
+][(abs phi - previous) =< 1.0e-5]
+
+print ["Result:" phi "after" iterations "iterations"]
+print ["The error is approximately" phi - (1 + sqrt 5) / 2]

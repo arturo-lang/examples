@@ -1,0 +1,30 @@
+fullCircle: #[
+    degree:  360
+    gradian: 400
+    mil:     6400
+    radian:  2 * pi
+]
+
+normalize: function [value, unit]->
+    value % fullCircle\[unit]
+
+convertAngle: function [value, source, target]->
+    (normalize value source) * fullCircle\[target] // fullCircle\[source]
+
+fmt: function [x]->
+    pad to :string .format:".7f" to :floating x 16
+
+angles: @[neg 2 neg 1 0 1 2 6.2831853 16 57.2957795 359 399 6399 1000000]
+
+units: keys fullCircle
+
+loop units 'unit [
+    targets: map units 'target -> pad target 16
+    print join @[pad unit 16 pad "normalized" 16] ++ targets
+
+    loop angles 'x [
+        converted: map units 'target -> fmt convertAngle x unit target
+        print join @[fmt x fmt normalize x unit] ++ converted
+    ]
+    print ""
+]

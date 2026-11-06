@@ -1,0 +1,44 @@
+walk: function [tree, leaves][
+    switch block? tree [
+        walk tree\0 leaves
+        walk tree\1 leaves
+    ][
+        send leaves tree
+    ]
+]
+
+sameFringe?: function [a, b][
+    fa: channel 'fringeA
+    fb: channel 'fringeB
+    walkers: @[
+        do.async [ walk a fa  unplug fa ]
+        do.async [ walk b fb  unplug fb ]
+    ]
+    while [true][
+        x: receive fa
+        y: receive fb
+        if x <> y [
+            loop walkers 'w -> cancel w
+            return false
+        ]
+        if null? x -> return true
+    ]
+]
+
+trees: #[
+    a: [1 [2 [3 [4 5]]]]
+    b: [[[[1 2] 3] 4] 5]
+    c: [[1 2] [[3 4] 5]]
+    d: [[1 2] [[3 4] 6]]
+    e: [1 [2 [3 4]]]
+]
+
+pairs: [
+    "a" "b"
+    "a" "c"
+    "b" "d"
+    "c" "e"
+]
+
+loop pairs [x, y] ->
+    print [x "vs" y "->" sameFringe? trees\[x] trees\[y]]

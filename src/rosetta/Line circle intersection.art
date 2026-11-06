@@ -1,0 +1,34 @@
+intersections: function [p1, p2, centre, radius, segment][
+    [x1, y1]: @[p1\0 - centre\0, p1\1 - centre\1]
+    [x2, y2]: @[p2\0 - centre\0, p2\1 - centre\1]
+    dx: x2 - x1
+    dy: y2 - y1
+    a: (dx * dx) + dy * dy
+    b: 2.0 * (x1 * dx) + y1 * dy
+    c: ((x1 * x1) + y1 * y1) - radius * radius
+    disc: (b * b) - 4 * a * c
+    if disc < 0 -> return []
+    root: sqrt disc
+    ts: unique @[(neg b - root) / 2 * a, (neg b + root) / 2 * a]
+    if segment -> ts: select ts 't -> and? t >= 0 t =< 1
+    map ts 't -> @[centre\0 + x1 + t * dx, centre\1 + y1 + t * dy]
+]
+
+fmt: function [x]-> to :string .format:".4f" to :floating x
+show: function [p]-> "(" ++ (fmt p\0) ++ ", " ++ (fmt p\1) ++ ")"
+
+tests: @[
+    @[neg 10 11] @[10 neg 9]  @[3 neg 5] 3 false
+    @[neg 10 11] @[neg 11 12] @[3 neg 5] 3 true
+    @[3 neg 2]   @[7 neg 2]   @[3 neg 5] 3 true
+    @[0 neg 3]   @[0 6]       @[0 0]     4 false
+    @[0 neg 3]   @[0 6]       @[0 0]     4 true
+    @[6 3]       @[10 7]      @[4 2]     5 false
+    @[7 4]       @[11 8]      @[4 2]     5 true
+]
+
+loop tests [p1, p2, centre, radius, segment][
+    kind: (segment)? -> "segment" -> "line"
+    points: map intersections p1 p2 centre radius segment => show
+    print [kind p1 p2 "circle at" centre "radius" radius "->" points]
+]

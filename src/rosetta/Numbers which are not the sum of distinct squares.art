@@ -1,0 +1,13 @@
+limit: 1000
+
+reachable: array.of: inc limit false
+reachable\0: true
+loop 1..floor sqrt limit 'k [
+    sq: k * k
+    loop limit..sq 'n ->
+        if reachable\[n - sq] -> reachable\[n]: true
+]
+
+missing: select 1..limit 'n -> not? reachable\[n]
+print "Numbers which are not the sum of distinct squares:"
+print missing

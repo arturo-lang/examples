@@ -1,0 +1,55 @@
+oddMagic: function [n][
+    sq: array.of: @[n n] 0
+    r: 0
+    c: n / 2
+    loop 1..n*n 'v [
+        sq\[r]\[c]: v
+        nr: (r + n - 1) % n
+        nc: (c + 1) % n
+        switch zero? sq\[nr]\[nc] [ r: nr  c: nc ]
+                                  [ r: (r + 1) % n ]
+    ]
+    sq
+]
+
+singlyEven: function [n][
+    half: n / 2
+    small: oddMagic half
+    sq: array.of: @[n n] 0
+    loop 0..dec half 'r ->
+        loop 0..dec half 'c [
+            v: small\[r]\[c]
+            sq\[r]\[c]: v
+            sq\[r + half]\[c + half]: v + half * half
+            sq\[r]\[c + half]: v + 2 * half * half
+            sq\[r + half]\[c]: v + 3 * half * half
+        ]
+    k: (n - 2) / 4
+    loop 0..dec half 'r [
+        cols: (r = half / 2)? -> 1..k -> 0..dec k
+        if k > 1 ->
+            cols: (@cols) ++ @(n - k + 1)..dec n
+        loop cols 'c [
+            tmp: sq\[r]\[c]
+            sq\[r]\[c]: sq\[r + half]\[c]
+            sq\[r + half]\[c]: tmp
+        ]
+    ]
+    sq
+]
+
+sq: singlyEven 6
+loop sq 'row ->
+    print map row 'v -> pad to :string v 3
+
+magic:     (6 * 37) / 2
+rowsOK:    every? sq 'row -> magic = sum row
+columnsOK: every? 0..5 'c -> magic = sum map sq 'row -> row\[c]
+diagonal:  sum map 0..5 'i -> sq\[i]\[i]
+antiDiag:  sum map 0..5 'i -> sq\[i]\[5 - i]
+
+print ""
+print ["Magic constant:" magic]
+print ["Rows OK:   " rowsOK]
+print ["Columns OK:" columnsOK]
+print ["Diagonals: " diagonal antiDiag]

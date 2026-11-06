@@ -1,0 +1,52 @@
+choices: ["" "+" "-"]
+
+expressions: []
+loop 0..dec 2 * 3^8 'code [
+    ops: @[(zero? code % 2)? -> "" -> "-"]
+    rest: code / 2
+    loop 1..8 'x [
+        'ops ++ choices\[rest % 3]
+        rest: rest / 3
+    ]
+
+    total: 0
+    sign: 1
+    current: 0
+    expr: ""
+    loop.with:'i 1..9 'digit [
+        op: ops\[i]
+        switch and? i > 0 empty? op
+            -> current: digit + current * 10
+            [
+                total: total + sign * current
+                sign: (op = "-")? -> neg 1 -> 1
+                current: digit
+            ]
+        'expr ++ op ++ to :string digit
+    ]
+    total: total + sign * current
+
+    'expressions ++ @[@[expr, total]]
+]
+
+solutions: select expressions 'ex -> 100 = last ex
+print "Solutions that sum to 100:"
+loop solutions 'ex ->
+    print ["  " first ex]
+
+totals: map expressions => last
+counts: tally select totals => positive?
+mostSolutions: max values counts
+best: select keys counts 'k -> mostSolutions = counts\[k]
+print ""
+print [
+    "Positive sum with the most solutions:" best
+    "(" ++ (to :string mostSolutions) ++ " solutions)"
+]
+
+sums: unique totals
+lowest: 1
+while [contains? sums lowest] -> inc 'lowest
+print ["Lowest positive sum that can't be expressed:" lowest]
+
+print ["Ten highest sums:" first.n: 10 sort.descending sums]

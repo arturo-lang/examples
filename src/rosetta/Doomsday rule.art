@@ -1,0 +1,16 @@
+weekdays: ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"]
+
+commonAnchors: [3 7 7 4 2 6 4 1 5 3 7 5]
+leapAnchors:   [4 1 7 4 2 6 4 1 5 3 7 5]
+
+dayOfWeek: function [date][
+    y: date\year
+    doomsday: (2 + (5 * y % 4) + (4 * y % 100) + 6 * y % 400) % 7
+    anchors: (leap? date)? -> leapAnchors -> commonAnchors
+    weekdays\[(doomsday + 7 + date\day - anchors\[date\month - 1]) % 7]
+]
+
+loop ["1800-01-06" "1875-03-29" "1915-12-07" "1970-12-23" "2043-05-14" "2077-02-12"] 'str [
+    date: to :date.format:"yyyy-MM-dd" str
+    print [str "->" dayOfWeek date]
+]

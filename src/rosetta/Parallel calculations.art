@@ -1,0 +1,22 @@
+numbers: [12757923 12878611 12878893 12757923 15808973 15780709 197622809]
+
+jobs:    channel.unbounded 'jobs
+results: channel.unbounded 'results
+
+workers: map 1..4 'w ->
+    do.async.isolated [
+        while [not? null? n: <= receive channel 'jobs][
+            send channel 'results @[n factors.prime n]
+        ]
+    ]
+
+loop numbers => [send jobs &]
+unplug jobs
+
+found: map numbers 'n -> receive results
+wait.all workers
+
+ordered: arrange found 'item -> item\0
+best: maximum ordered 'item -> min item\1
+
+print [best\0 "has the largest minimal factor:" best\1]

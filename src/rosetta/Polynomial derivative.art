@@ -1,0 +1,36 @@
+derivative: function [coeffs]->
+    drop map.with:'power coeffs 'c -> power * c
+
+showTerm: function [c, power][
+    coefficient: (and? 1 = abs c power > 0)? -> ""
+                                             -> to :string abs c
+    coefficient ++ case power [
+        0   -> ""
+        1   -> "x"
+        any -> ~"x^|power|"
+    ]
+]
+
+showPolynomial: function [coeffs][
+    indexed: map.with:'power coeffs 'c -> @[c power]
+    terms: select reverse indexed 't -> not? zero? t\0
+    if empty? terms -> return "0"
+    join map.with:'i terms 't [
+        term: showTerm t\0 t\1
+        sign: (negative? t\0)? -> "-" -> "+"
+        switch zero? i
+            -> ((sign = "-")? -> "-" -> "") ++ term
+            -> ~" |sign| |term|"
+    ]
+]
+
+polynomials: @[
+    [5]
+    @[4 neg 3]
+    @[neg 1 6 5]
+    @[neg 4 3 neg 2 1]
+    @[1 1 0 neg 1 neg 1]
+]
+
+loop polynomials 'poly ->
+    print [pad showPolynomial poly 24 "->" showPolynomial derivative poly]

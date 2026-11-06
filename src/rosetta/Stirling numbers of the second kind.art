@@ -1,0 +1,23 @@
+memo: #[]
+
+S2: function [n k][
+    if n = k -> return 1
+    if or? zero? n zero? k -> return 0
+    if k > n -> return 0
+
+    key: ~"|n|,|k|"
+    unless key? memo key ->
+        memo\[key]: (k * S2 n-1 k) + S2 n-1 k-1
+    return memo\[key]
+]
+
+print "Stirling numbers of the second kind:"
+print ["n/k"] ++ map 0..12 'k ->
+    pad to :string k 9
+loop 0..12 'n ->
+    print @[pad to :string n 3] ++ map 0..n 'k ->
+        pad to :string S2 n k 9
+
+print ""
+print "Maximum value of S2(100, k):"
+print max map 1..100 'k -> S2 100 k

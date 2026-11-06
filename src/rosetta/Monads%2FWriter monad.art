@@ -1,0 +1,29 @@
+fmt: function [x]-> to :string .format:".15f" x
+
+unit: function [x]-> @[x, @["Initial value    : " ++ fmt x]]
+
+writer: function [f, label]->
+    function.import:[f label] [x][
+        y: call f @[x]
+        @[y, @[label ++ " : " ++ fmt y]]
+    ]
+
+bind: function [w, f][
+    result: call f @[w\0]
+    @[result\0, w\1 ++ result\1]
+]
+
+root:   function [x]-> sqrt x
+addOne: function [x]-> x + 1
+half:   function [x]-> x / 2
+
+rootW:   writer 'root   "Took square root"
+addOneW: writer 'addOne "Added one       "
+halfW:   writer 'half   "Divided by two  "
+
+[golden, steps]: bind bind bind unit 5.0 'rootW 'addOneW 'halfW
+
+print ["The Golden Ratio is" golden]
+print ""
+print "This was derived as follows:"
+loop steps 'line -> print ["  " line]

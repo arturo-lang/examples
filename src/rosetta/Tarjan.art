@@ -1,0 +1,57 @@
+tarjan: function [graph][
+    n: size graph
+    counter: [0]
+    indexOf: array.of: n neg 1
+    lowLink: array.of: n 0
+    onStack: array.of: n false
+    stack: []
+    components: []
+
+    strongConnect: function [v][
+        indexOf\[v]: counter\0
+        lowLink\[v]: counter\0
+        counter\0: inc counter\0
+        'stack ++ v
+        onStack\[v]: true
+
+        loop graph\[v] 'w [
+            switch indexOf\[w] = neg 1 [
+                strongConnect w
+                lowLink\[v]: min @[lowLink\[v] lowLink\[w]]
+            ][
+                if onStack\[w] ->
+                    lowLink\[v]: min @[lowLink\[v] indexOf\[w]]
+            ]
+        ]
+
+        if lowLink\[v] = indexOf\[v] [
+            component: []
+            until [
+                w: last stack
+                chop 'stack
+                onStack\[w]: false
+                'component ++ w
+            ][w = v]
+            'components ++ @[component]
+        ]
+    ]
+
+    loop 0..dec n 'v ->
+        if indexOf\[v] = neg 1 -> strongConnect v
+
+    components
+]
+
+graph: [
+    [1]
+    [2]
+    [0]
+    [1 2 4]
+    [3 5]
+    [2 6]
+    [5]
+    [4 6 7]
+]
+
+loop tarjan graph 'component ->
+    print [component]

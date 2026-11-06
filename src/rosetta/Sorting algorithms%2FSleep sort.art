@@ -1,0 +1,7 @@
+tasks: map to [:integer] arg 'n ->
+    do.async [
+        pause 100 * n
+        print n
+    ]
+
+wait.all tasks

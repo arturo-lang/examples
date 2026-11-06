@@ -1,0 +1,26 @@
+toVLQ: function [n][
+    result: @[and n 127]
+    rest: shr n 7
+    while [rest > 0][
+        prepend 'result or 128 and rest 127
+        rest: shr rest 7
+    ]
+    return result
+]
+
+fromVLQ: function [octets]->
+    fold.seed: 0 octets [acc, b] ->
+        or (shl acc 7) and b 127
+
+showOctets: function [octets]->
+    join.with: " " map octets 'b ->
+        pad.with:'0' upper to :string.format: "x" b 2
+
+loop [2097152 2097151 0 127 128 16384] 'n [
+    vlq: toVLQ n
+    print [
+        pad to :string n 8 "->"
+        pad.right showOctets vlq 12 "->"
+        fromVLQ vlq
+    ]
+]

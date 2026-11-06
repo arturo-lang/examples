@@ -1,0 +1,6 @@
+words: ["Rosetta" "Code" "is" "a" "programming" "chrestomathy" "site"]
+
+words | map 'w -> @[w size w]
+      | arrange => last
+      | map => first
+      | print

@@ -1,0 +1,26 @@
+rk4: function [f, t, y, dt][
+    dy1: dt * call f @[t, y]
+    dy2: dt * call f @[t + dt/2, y + dy1/2]
+    dy3: dt * call f @[t + dt/2, y + dy2/2]
+    dy4: dt * call f @[t + dt, y + dy3]
+    y + (dy1 + dy4 + 2 * dy2 + dy3) / 6
+]
+
+dydt: function [t, y]-> t * sqrt y
+exact: function [t]-> ((4 + t^2)^2) / 16
+
+dt: 0.1
+
+y: 1.0
+loop 0..100 'i [
+    t: i * dt
+    if zero? i % 10 [
+        err: abs y - exact t
+        print [
+            "y(" ++ (pad to :string t 4) ++ ") ="
+            pad to :string.format: ".6f" y 12
+            "error:" to :string.format: ".6e" err
+        ]
+    ]
+    y: rk4 'dydt t y dt
+]

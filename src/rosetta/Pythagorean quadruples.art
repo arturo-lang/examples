@@ -1,0 +1,14 @@
+N: 2200
+
+sumOfTwo: array.of: inc 2*N*N false
+loop 1..N 'a ->
+    loop a..N 'b ->
+        sumOfTwo\[(a*a) + b*b]: true
+
+representable: array.of: inc N false
+loop 1..dec N 'c ->
+    loop (inc c)..N 'd ->
+        if sumOfTwo\[(d*d) - c*c] ->
+            representable\[d]: true
+
+print select 1..N 'd -> not? representable\[d]

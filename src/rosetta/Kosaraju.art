@@ -1,0 +1,45 @@
+kosaraju: function [graph][
+    n: size graph
+    visited: array.of: n false
+    order: []
+
+    visit: function [u][
+        unless visited\[u] [
+            visited\[u]: true
+            loop graph\[u] 'v -> visit v
+            'order ++ u
+        ]
+    ]
+
+    transposed: map 0..dec n 'u -> []
+    loop.with:'u graph 'neighbours ->
+        loop neighbours 'v ->
+            transposed\[v]: transposed\[v] ++ u
+
+    component: array.of: n neg 1
+
+    assign: function [u, root][
+        if component\[u] = neg 1 [
+            component\[u]: root
+            loop transposed\[u] 'v -> assign v root
+        ]
+    ]
+
+    loop 0..dec n => visit
+    loop reverse order 'u -> assign u u
+
+    component
+]
+
+graph: [
+    [1]
+    [2]
+    [0]
+    [1 2 4]
+    [3 5]
+    [2 6]
+    [5]
+    [4 6 7]
+]
+
+print kosaraju graph

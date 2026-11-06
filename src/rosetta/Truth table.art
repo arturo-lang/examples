@@ -1,0 +1,40 @@
+binop: function [op, a, b][
+    case op [
+        "&" -> and? a b
+        "|" -> or? a b
+        "^" -> xor? a b
+    ]
+]
+
+evaluate: function [tokens, env][
+    stack: []
+    loop tokens 'tok [
+        when [
+            tok = "!"                   -> stack: (chop stack) ++ not? last stack
+            contains? ["&" "|" "^"] tok -> stack: (chop chop stack) ++ binop tok last chop stack last stack
+            true                        -> 'stack ++ env\[tok]
+        ]
+    ]
+    last stack
+]
+
+truthTable: function [expr][
+    tokens: split.words expr
+    vars: sort unique select tokens 't -> match? t {/^[A-Z]$/}
+    print ["Boolean expression:" expr]
+    print ""
+    print [join.with:" " vars ":" expr]
+    loop 0..dec 2 ^ size vars 'row [
+        env: #[]
+        bits: map.with:'i vars 'v -> odd? shr row dec (size vars) - i
+        loop.with:'i vars 'v -> env\[v]: bits\[i]
+        cells: to [:integer] bits
+        result: to :integer evaluate tokens env
+        print [join.with:" " to [:string] cells ":" result]
+    ]
+    print ""
+]
+
+truthTable "A ! B |"
+truthTable "A B ^ C &"
+truthTable "A B & C D & |"

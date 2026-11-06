@@ -1,0 +1,31 @@
+limit: 1000035
+
+primes: select 2..limit+6 => prime?
+primeSet: #[]
+loop primes 'p ->
+    primeSet\[p]: true
+
+isPrime?: function [n]-> key? primeSet n
+
+groupsOf: function [k][
+    select primes 'p ->
+        and? -> limit > p + 6 * k-1
+             -> every? 0..k-1 'i -> isPrime? p + 6*i
+]
+
+loop [2 "pairs" 3 "triplets" 4 "quadruplets" 5 "quintuplets"] [k, label][
+    found: groupsOf k
+    lastFive: map last.n: min @[5 size found] found 'p ->
+        map 0..k-1 'i -> p + 6*i
+
+    print ["Number of sexy prime" label ++ ":" size found]
+    print ["  last 5:" lastFive]
+    print ""
+]
+
+unsexy: select primes 'p ->
+    and? -> p < limit
+         -> not? or? isPrime? p-6 isPrime? p+6
+
+print ["Number of unsexy primes:" size unsexy]
+print ["  last 10:" last.n: 10 unsexy]

@@ -1,0 +1,5 @@
+i: to :complex [0 1]
+
+result: inc exp i * pi
+print ["e^(iπ) + 1 =" result]
+print ["error:" abs result]

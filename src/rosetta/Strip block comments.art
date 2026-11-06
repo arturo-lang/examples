@@ -1,0 +1,27 @@
+stripBlockComments: function [text, opening, closing][
+    escaped: map @[opening closing] 'delimiter ->
+        replace delimiter {/([*\/.+?()\[\]{}|^$\\])/} "\\$1"
+
+    replace text to :regex ~{(?s)|escaped\0|.*?(|escaped\1||\z)} ""
+]
+
+sample: {
+  /**
+   * Some comments
+   * longer comments here that we can parse.
+   *
+   * Rahoo
+   */
+   function subroutine() {
+    a = /* inline comment */ b + c ;
+   }
+   /*/ <-- tricky comments */
+
+   /**
+    * Another comment.
+    */
+    function something() {
+    }
+}
+
+print stripBlockComments sample "/*" "*/"

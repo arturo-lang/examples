@@ -1,0 +1,54 @@
+convergents: function [terms][
+    result: []
+    [h1, h2]: [1 0]
+    [k1, k2]: [0 1]
+    loop terms 'a [
+        h: (a * h1) + h2
+        k: (a * k1) + k2
+        'result ++ @[@[h k]]
+        h2: h1  h1: h
+        k2: k1  k1: k
+    ]
+    result
+]
+
+rationalTerms: function [m, n][
+    result: []
+    while [n <> 0][
+        'result ++ m / n
+        r: m % n
+        m: n
+        n: r
+    ]
+    result
+]
+
+quadraticTerms: function [a, b, p, q, count][
+    d: a * b * b
+    unless zero? (d - p * p) % q [
+        d: d * q * q
+        p: p * abs q
+        q: q * abs q
+    ]
+    root: sqrt.integer d
+    result: []
+    do.times: count [
+        t: (p + root) / q
+        'result ++ t
+        p: (t * q) - p
+        q: (d - p * p) / q
+    ]
+    result
+]
+
+show: function [label, cs][
+    shown: map cs 'c ->
+        (c\1 = 1)? -> to :string c\0 -> ~"|c\0|/|c\1|"
+    print [pad label 12 "=" join.with:" " shown]
+]
+
+show "415/93"       convergents rationalTerms 415 93
+show "649/200"      convergents rationalTerms 649 200
+show "sqrt(2)"      convergents quadraticTerms 2 1 0 1 8
+show "sqrt(5)"      convergents quadraticTerms 5 1 0 1 8
+show "golden ratio" convergents quadraticTerms 5 1 1 2 8

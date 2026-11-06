@@ -1,0 +1,23 @@
+humbleUpTo: function [limit][
+    h: [1]
+    idx: [0 0 0 0]
+    factors: [2 3 5 7]
+    while [true][
+        candidates: map 0..3 'i -> factors\[i] * h\[idx\[i]]
+        nxt: min candidates
+        if nxt > limit -> return h
+        'h ++ nxt
+        loop 0..3 'i ->
+            if candidates\[i] = nxt -> idx\[i]: inc idx\[i]
+    ]
+]
+
+humble: humbleUpTo 10^12
+
+print "The first 50 humble numbers:"
+print first.n: 50 humble
+print ""
+
+counts: tally map humble 'x -> size digits x
+loop 1..12 'd ->
+    print [pad to :string counts\[d] 6 "have" d "digits"]

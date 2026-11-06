@@ -1,0 +1,39 @@
+exponentsFor: function [n][
+    found: []
+    pw: n
+    k: 1
+    while [n >= size digits pw][
+        k: inc k
+        pw: pw * n
+        if n = sum digits pw -> 'found ++ k
+    ]
+    found
+]
+
+show: function [n, ks]->
+    join.with:", " map ks 'k -> ~"|n|^|k|"
+
+print "First twenty-five integers that are equal to the digital sum of that integer raised to some power:"
+count: 0
+n: 1
+while [count < 25][
+    n: inc n
+    ks: exponentsFor n
+    unless empty? ks [
+        print show n ks
+        count: inc count
+    ]
+]
+
+print ""
+print "First ten that satisfy that condition in three or more ways:"
+count: 0
+n: 1
+while [count < 10][
+    n: inc n
+    ks: exponentsFor n
+    if 3 =< size ks [
+        print show n ks
+        count: inc count
+    ]
+]

@@ -1,0 +1,13 @@
+rounds: [
+    ["Ann" "Bob" "Cid"]
+    ["Ann" "Bob" "Cid" "Dee"]
+    ["Bob" "Cid" "Dee"]
+]
+
+loop.with:'i rounds 'workers [
+    loop.parallel workers 'worker [
+        pause random 100 500
+        print [worker "finished part" inc i]
+    ]
+    print ["Checkpoint" inc i "- assembling" size workers "parts"]
+]

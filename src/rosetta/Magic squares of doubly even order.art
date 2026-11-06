@@ -1,0 +1,33 @@
+magicSquare: function [n][
+    ensure -> zero? n % 4
+
+    pattern: "1001011001101001"
+    s: n / 4
+    map 0..dec n 'i ->
+        map 0..dec n 'j [
+            value: 1 + j + i * n
+            switch '1' = pattern\[(j / s) + 4 * i / s]
+                -> value
+                -> (n * n) + 1 - value
+        ]
+]
+
+n: 8
+square: magicSquare n
+
+loop square 'row ->
+    print map row 'x -> pad to :string x 3
+
+magic: (n * inc n * n) / 2
+rows: unique map square => sum
+columns: unique map 0..dec n 'j -> sum map square 'row -> row\[j]
+diagonals: unique @[
+    sum map 0..dec n 'i -> square\[i]\[i]
+    sum map 0..dec n 'i -> square\[i]\[(dec n) - i]
+]
+
+print ""
+print ["Magic constant:" magic]
+print ["Rows:     " rows]
+print ["Columns:  " columns]
+print ["Diagonals:" diagonals]

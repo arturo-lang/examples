@@ -1,0 +1,12 @@
+day: to :date .format:"yyyy-MM-dd" "2020-02-02"
+found: 0
+
+print "The next 15 palindromic dates after 2020-02-02:"
+while [found < 15][
+    day: after.days: 1 day
+    stamp: to :string .format:"yyyyMMdd" day
+    if stamp = reverse stamp [
+        print ["   " to :string .format:"yyyy-MM-dd" day]
+        found: inc found
+    ]
+]

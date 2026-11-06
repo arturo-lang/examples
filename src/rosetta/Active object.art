@@ -1,0 +1,42 @@
+clock: function [][
+    d: now
+    1`s * (to :integer d) + d\nanosecond // 1000000000
+]
+
+define :integrator [
+    init: method [][
+        state: #[input: $[t][0.0] output: 0.0]
+        \state: state
+        \worker: do.async [
+            t0: clock
+            k0: 0.0
+            while [true][
+                pause 1`ms
+                t1: clock
+                k1: do [state\input t1]
+                state\output: state\output + (k0 + k1) * (to :floating scalar t1 - t0) / 2
+                t0: t1
+                k0: k1
+            ]
+        ]
+    ]
+    input: method [f][
+        \state\input: var 'f
+    ]
+    output: method [][
+        \state\output
+    ]
+    stop: method [][
+        cancel \worker
+    ]
+]
+
+freq: 0.5`Hz
+
+integ: to :integrator []!
+integ\input $[t][sin to :floating scalar 2 * pi * freq * t]
+pause 2`s
+integ\input $[t][0.0]
+pause 0.5`s
+print ["Output after 2.5 s:" round.to:4 integ\output]
+integ\stop

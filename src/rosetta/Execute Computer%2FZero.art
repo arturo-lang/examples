@@ -1,0 +1,33 @@
+run: function [program][
+    mem: program ++ array.of: 32 - size program 0
+    acc: 0
+    pc: 0
+    while [true][
+        instruction: mem\[pc]
+        op:  shr instruction 5
+        arg: and instruction 31
+        pc: (inc pc) % 32
+        case op [
+            1 -> acc: mem\[arg]
+            2 -> mem\[arg]: acc
+            3 -> acc: (acc + mem\[arg]) % 256
+            4 -> acc: ((acc - mem\[arg]) + 256) % 256
+            5 -> if zero? acc -> pc: arg
+            6 -> pc: arg
+            7 -> return acc
+        ]
+    ]
+]
+
+programs: [
+    "2+2"        [35 100 224 2 2]
+    "7*8"        [44 106 76 43 141 75 168 192 44 224 8 7 0 1]
+    "fibonacci"  [46 79 109 78 47 77 48 145 171 80 192 46 224 1 1 0 8 1]
+    "linkedList" [45 111 69 112 71 0 78 0 171 79 192 46 224 32 0 28 1 0 0 0 6 0 2 26 5 20 3 30 1 22 4 24]
+    "prisoner"   [0 0 224 0 0 35 157 178 35 93 174 33 127 65 194 32 127 64 192 35 93 33 126 99]
+]
+
+loop programs [name, code][
+    result: run code
+    print [pad name 12 ":" pad to :string result 3]
+]

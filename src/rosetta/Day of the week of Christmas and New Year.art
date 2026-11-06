@@ -1,0 +1,5 @@
+christmas: to :date.format:"yyyy-MM-dd" "2021-12-25"
+newYear:   to :date.format:"yyyy-MM-dd" "2022-01-01"
+
+print ["Christmas Day 2021 falls on a" christmas\Day]
+print ["New Year's Day 2022 falls on a" newYear\Day]

@@ -1,0 +1,19 @@
+unit: function [x]-> x
+
+bind: function [m, f]->
+    (m = maybe)? -> maybe -> call f @[m]
+
+safeReciprocal: function [x]-> (zero? x)? -> maybe -> 1 // x
+safeRoot: function [x]-> (negative? x)? -> maybe -> sqrt x
+safeLog: function [x]-> (x =< 0)? -> maybe -> ln x
+
+safeLogRootReciprocal: function [x][
+    x | unit
+      | bind 'safeReciprocal
+      | bind 'safeRoot
+      | bind 'safeLog
+]
+
+loop @[neg 2 neg 1 neg 0.5 0 1 2 exp 1] 'x [
+    print [pad to :string x 20 "->" safeLogRootReciprocal x]
+]

@@ -1,0 +1,35 @@
+define :node [
+    init: constructor [value next]
+
+    string: method [][
+        items: []
+        current: this
+        while [not? null? current][
+            'items ++ current\value
+            current: current\next
+        ]
+        join.with:" -> " to [:string] items
+    ]
+]
+
+removeValue: function [node, target][
+    if null? node -> return null
+    if node\value = target -> return node\next
+    node\next: removeValue node\next target
+    node
+]
+
+lst: fold.seed: null 5..1 [following v] -> to :node @[v following]!
+print ["Initial list:     " lst]
+
+lst: removeValue lst 3
+print ["Removing 3:       " lst]
+
+lst: removeValue lst 1
+print ["Removing the head:" lst]
+
+lst: removeValue lst 5
+print ["Removing the tail:" lst]
+
+lst: removeValue lst 42
+print ["Removing 42:      " lst]

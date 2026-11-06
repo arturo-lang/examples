@@ -1,0 +1,4 @@
+loop.parallel ["Enjoy" "Rosetta" "Code"] 'word [
+    pause random 0 100
+    print word
+]

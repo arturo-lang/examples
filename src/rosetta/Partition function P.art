@@ -1,0 +1,23 @@
+partitions: function [limit][
+    p: array.of: inc limit 0
+    p\0: 1
+    loop 1..limit 'n [
+        total: 0
+        k: 1
+        while [true][
+            g1: (k * (3 * k) - 1) / 2
+            if g1 > n -> break
+            sgn: (odd? k)? -> 1 -> neg 1
+            total: total + sgn * p\[n - g1]
+            g2: g1 + k
+            if g2 =< n -> total: total + sgn * p\[n - g2]
+            k: inc k
+        ]
+        p\[n]: total
+    ]
+    p
+]
+
+p: partitions 6666
+print ["Partitions:" first.n: 15 p]
+print ["P(6666) =" p\6666]

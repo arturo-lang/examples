@@ -1,0 +1,12 @@
+define :node [value next]
+
+c: to :node @[3 null]
+b: to :node @[2 c]
+a: to :node @[1 b]
+
+print [
+    "first:" a\value
+    "second:" a\next\value
+    "third:" a\next\next\value
+]
+print ["after the third:" a\next\next\next]

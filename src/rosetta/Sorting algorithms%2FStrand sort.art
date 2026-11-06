@@ -1,0 +1,40 @@
+mergeSorted: function [a, b][
+    result: []
+    i: 0
+    j: 0
+    while [and? i < size a  j < size b][
+        switch a\[i] =< b\[j] [
+            'result ++ a\[i]
+            i: inc i
+        ][
+            'result ++ b\[j]
+            j: inc j
+        ]
+    ]
+    (result ++ drop.times: i a) ++ drop.times: j b
+]
+
+strandSort: function [items][
+    remaining: new items
+    result: []
+    while [not? empty? remaining][
+        strand: []
+        leftover: []
+        loop remaining 'x [
+            switch or? -> empty? strand
+                       -> x >= last strand
+                [ 'strand ++ x ]
+                [ 'leftover ++ x ]
+        ]
+        result: mergeSorted result strand
+        remaining: leftover
+    ]
+    result
+]
+
+loop [
+    [5 1 4 2 0 9 6 3 8 7]
+    [1 2 3 4 5]
+    [3 3 1 2 1 3 2]
+] 'items ->
+    print [items "->" strandSort items]

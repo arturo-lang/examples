@@ -1,0 +1,29 @@
+dft: function [xs, sign][
+    n: size xs
+    map 0..dec n 'k ->
+        fold 0..dec n .seed: to :complex [0 0] [acc j][
+            theta: (sign * 2 * pi * j * k) / n
+            acc + xs\[j] * to :complex @[cos theta, sin theta]
+        ]
+]
+
+fmt: function [c][
+    re: to :string .format:".4f" c\re
+    im: to :string .format:".4f" abs c\im
+    op: (negative? c\im)? -> " - " -> " + "
+    re ++ op ++ im ++ "i"
+]
+
+sequence: [2 3 5 7 11]
+print ["Original sequence:" sequence]
+
+complexes:   map sequence 'x -> to :complex @[x 0]
+transformed: dft complexes neg 1
+shown:       join.with:", " map transformed => fmt
+print "Discrete Fourier transform:"
+print ["   " shown]
+
+restored: map dft transformed 1 'c -> c / size sequence
+cleaned:  map restored 'c -> to :integer round c\re
+print "Inverse transform, cleaned up:"
+print ["   " cleaned]

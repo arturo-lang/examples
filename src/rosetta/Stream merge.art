@@ -1,0 +1,32 @@
+generators: #[
+    squares:    $[n][n * n]
+    cubes:      $[n][n * n * n]
+    powers:     $[n][2 ^ n]
+    triangular: $[n][(n * inc n) / 2]
+]
+
+channels: #[]
+producers: []
+loop generators [name, f][
+    ch: channel.bounded: 1 'source
+    channels\[name]: ch
+    'producers ++ do.async [
+        n: 1
+        while [true][
+            send ch f n
+            n: inc n
+        ]
+    ]
+]
+
+heads: #[]
+loop channels [name, ch] ->
+    heads\[name]: receive ch
+
+do.times: 20 [
+    src: minimum keys heads 'k -> heads\[k]
+    print [pad to :string heads\[src] 4 "<-" src]
+    heads\[src]: receive channels\[src]
+]
+
+loop producers 'p -> cancel p

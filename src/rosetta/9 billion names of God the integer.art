@@ -1,0 +1,43 @@
+rows: function [count][
+    c: [[] [0 1]]
+    loop 2..count 'n [
+        row: [0]
+        loop 1..n 'k [
+            fromSmaller: c\[dec n]\[dec k]
+            fromRest:    (k =< n - k)? -> c\[n - k]\[k] -> 0
+            'row ++ fromSmaller + fromRest
+        ]
+        'c ++ @[row]
+    ]
+    c
+]
+
+partitionsUpTo: function [limit][
+    p: array.of: inc limit 0
+    p\0: 1
+    loop 1..limit 'n [
+        total: 0
+        k: 1
+        while [true][
+            g1: (k * (3 * k) - 1) / 2
+            if g1 > n -> break
+            g2: (k * (3 * k) + 1) / 2
+            s: (odd? k)? -> 1 -> neg 1
+            total: total + s * p\[n - g1]
+            if g2 =< n -> total: total + s * p\[n - g2]
+            k: inc k
+        ]
+        p\[n]: total
+    ]
+    p
+]
+
+triangle: rows 25
+print "rows:"
+loop 1..25 'n ->
+    print [pad to :string n 2 ":" drop triangle\[n]]
+
+print ""
+p: partitionsUpTo 12345
+loop [23 123 1234 12345] 'n ->
+    print [~"G(|n|) =" p\[n]]

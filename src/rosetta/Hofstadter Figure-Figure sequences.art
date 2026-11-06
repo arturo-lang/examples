@@ -1,0 +1,31 @@
+R: [1]
+S: [2]
+
+growTo: function [n][
+    while [n > size R][
+        'R ++ (last R) + S\[dec size R]
+        while [(last S) < last R][
+            nextS: inc last S
+            if contains? R nextS -> inc 'nextS
+            'S ++ nextS
+        ]
+    ]
+]
+
+ffr: function [n][
+    growTo n
+    R\[n-1]
+]
+
+ffs: function [n][
+    while [n > size S] ->
+        growTo inc size R
+    S\[n-1]
+]
+
+firstTen: map 1..10 => ffr
+print ["First 10 values of R:" firstTen]
+
+combined: sort (map 1..40 => ffr) ++ map 1..960 => ffs
+exactlyOnce: combined = @1..1000
+print ["First 40 of R + first 960 of S contain 1..1000 exactly once:" exactlyOnce]

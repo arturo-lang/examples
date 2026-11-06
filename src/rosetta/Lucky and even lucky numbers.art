@@ -1,0 +1,22 @@
+luckySieve: function [limit, even][
+    numbers: select 1..limit 'x -> (even)? -> even? x -> odd? x
+    idx: 1
+    while [idx < size numbers][
+        step: numbers\[idx]
+        if step > size numbers -> break
+        numbers: select.with:'i numbers 'x -> not? zero? (inc i) % step
+        idx: inc idx
+    ]
+    numbers
+]
+
+lucky:     luckySieve 7000 false
+evenLucky: luckySieve 7000 true
+
+luckyRange:     select lucky 'x -> between? x 6000 6100
+evenLuckyRange: select evenLucky 'x -> between? x 6000 6100
+
+print ["Lucky numbers 1 to 20:     " join.with:", " to [:string] first.n: 20 lucky]
+print ["Even lucky numbers 1 to 20:" join.with:", " to [:string] first.n: 20 evenLucky]
+print ["Lucky numbers between 6000 and 6100:" luckyRange]
+print ["Even lucky numbers between 6000 and 6100:" evenLuckyRange]

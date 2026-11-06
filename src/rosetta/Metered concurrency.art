@@ -1,0 +1,27 @@
+capacity: 2
+
+semaphore: channel.bounded: capacity 'semaphore
+held: #[units: 0]
+
+acquire: function [][
+    send semaphore true
+    held\units: inc held\units
+]
+
+release: function [][
+    receive semaphore
+    held\units: dec held\units
+]
+
+count: function []-> capacity - held\units
+
+tasks: map 1..5 'worker ->
+    do.async [
+        acquire
+        print ["Worker" worker "acquired the semaphore, free units:" count]
+        pause 2000
+        release
+        print ["Worker" worker "released the semaphore, free units:" count]
+    ]
+
+wait.all tasks

@@ -1,0 +1,48 @@
+define :wheel [
+    init: constructor [name :string]
+    accept: method [visitor][ visitor\visitWheel this ]
+]
+
+define :engine [
+    accept: method [visitor][ visitor\visitEngine this ]
+]
+
+define :body [
+    accept: method [visitor][ visitor\visitBody this ]
+]
+
+define :car [
+    init: method [][
+        \parts: @[
+            to :wheel ["front left"]!
+            to :wheel ["front right"]!
+            to :wheel ["back left"]!
+            to :wheel ["back right"]!
+            to :body []!
+            to :engine []!
+        ]
+    ]
+    accept: method [visitor][
+        loop \parts 'part -> do [part\accept visitor]
+        visitor\visitCar this
+    ]
+]
+
+define :printVisitor [
+    visitWheel:  method [w][ print ["Visiting my" w\name "wheel."] ]
+    visitEngine: method [e][ print "Visiting my engine." ]
+    visitBody:   method [b][ print "Visiting body." ]
+    visitCar:    method [c][ print "Visiting car." ]
+]
+
+define :doVisitor [
+    visitWheel:  method [w][ print ["Kicking my" w\name "wheel."] ]
+    visitEngine: method [e][ print "Starting my engine." ]
+    visitBody:   method [b][ print "Moving my body." ]
+    visitCar:    method [c][ print "Starting my car." ]
+]
+
+car: to :car []!
+car\accept to :printVisitor []!
+print ""
+car\accept to :doVisitor []!

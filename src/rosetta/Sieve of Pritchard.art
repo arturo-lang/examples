@@ -1,0 +1,40 @@
+pritchard: function [limit][
+    members: array.of: inc limit false
+    members\1: true
+    stepLength: 1
+    prime: 2
+    rootLimit: sqrt.integer limit
+    nLimit: 2
+    primes: []
+    while [prime =< rootLimit][
+        if stepLength < limit [
+            loop 1..limit 'w [
+                if members\[w] [
+                    n: w + stepLength
+                    while [n =< nLimit][
+                        members\[n]: true
+                        n: n + stepLength
+                    ]
+                ]
+            ]
+            stepLength: nLimit
+        ]
+        nextPrime: 5
+        snapshot: new members
+        loop 1..limit 'w [
+            if snapshot\[w] [
+                if and? nextPrime = 5 w > prime -> nextPrime: w
+                n: prime * w
+                if n > nLimit -> break
+                members\[n]: false
+            ]
+        ]
+        if nextPrime < prime -> break
+        'primes ++ prime
+        prime: (prime = 2)? -> 3 -> nextPrime
+        nLimit: min @[stepLength * prime, limit]
+    ]
+    sort primes ++ select 2..limit 'i -> members\[i]
+]
+
+print pritchard 150

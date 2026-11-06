@@ -1,0 +1,21 @@
+amb: function [sets, chosen][
+    if empty? sets -> return chosen
+    loop first sets 'option [
+        ok: or? -> empty? chosen
+                -> (last last chosen) = first option
+        if ok [
+            result: amb drop sets chosen ++ @[option]
+            unless null? result -> return result
+        ]
+    ]
+    null
+]
+
+sets: [
+    ["the" "that" "a"]
+    ["frog" "elephant" "thing"]
+    ["walked" "treaded" "grows"]
+    ["slowly" "quickly"]
+]
+
+print join.with:" " amb sets []

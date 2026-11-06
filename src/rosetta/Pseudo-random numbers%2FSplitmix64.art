@@ -1,0 +1,27 @@
+mask: (2 ^ 64) - 1
+
+define :splitmix64 [
+    init: constructor [state :integer]
+    nextInt: method [][
+        \state: and (\state + 11400714819323198485) mask
+        z: \state
+        z: and (xor z shr z 30) * 13787848793156543929 mask
+        z: and (xor z shr z 27) * 10723151780598845931 mask
+        xor z shr z 31
+    ]
+    nextFloat: method []->
+        (to :floating to :string \nextInt) // 18446744073709551616.0
+]
+
+rng: to :splitmix64 [1234567]!
+do.times: 5 ->
+    print rng\nextInt
+
+rng: to :splitmix64 [987654321]!
+counts: array.of: 5 0
+do.times: 100000 [
+    i: floor 5 * rng\nextFloat
+    counts\[i]: inc counts\[i]
+]
+print ""
+print ["Distribution of floor(5 * nextFloat) over 100,000 values:" counts]

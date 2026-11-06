@@ -1,0 +1,41 @@
+padovanRecurrence: function [n][
+    result: [1 1 1]
+    while [n > size result][
+        i: size result
+        'result ++ result\[i-2] + result\[i-3]
+    ]
+    first.n: n result
+]
+
+p: 1.324717957244746025960908854
+s: 1.0453567932525329623
+
+padovanFloor: function [n]->
+    map 0..dec n 'i -> floor 0.5 + (p ^ dec i) / s
+
+rules: #[A: "B" B: "C" C: "AB"]
+
+padovanLSystem: function [n][
+    current: "A"
+    result: @[current]
+    while [n > size result][
+        current: join map split current 'ch -> rules\[ch]
+        'result ++ current
+    ]
+    result
+]
+
+print "First 20 terms of the Padovan sequence:"
+print padovanRecurrence 20
+print ""
+
+print ["Recurrence and floor based functions agree for 64 terms:"
+       (padovanRecurrence 64) = padovanFloor 64]
+print ""
+
+print "First 10 strings produced from the L-system:"
+print join.with:", " padovanLSystem 10
+print ""
+
+print ["Lengths of the first 32 L-system strings match the sequence:"
+       (map padovanLSystem 32 => size) = padovanRecurrence 32]

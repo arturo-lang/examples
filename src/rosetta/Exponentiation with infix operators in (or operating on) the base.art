@@ -1,0 +1,8 @@
+loop @[neg 5 5] 'x ->
+    loop [2 3] 'p ->
+        print [
+            "x =" pad to :string x 2 "p =" p
+            "   neg x ^ p ="     pad to :string neg x ^ p 4
+            "   (neg x) ^ p ="   pad to :string (neg x) ^ p 4
+            "   neg (x ^ p) ="   pad to :string neg (x ^ p) 4
+        ]

@@ -1,0 +1,35 @@
+toEngel: function [x][
+    result: []
+    while [x > 0][
+        a: ceil 1 // x
+        'result ++ a
+        x: dec x * a
+    ]
+    result
+]
+
+fromEngel: function [expansion][
+    term: 1:1
+    result: 0:1
+    loop expansion 'a [
+        term: term // a
+        result: result + term
+    ]
+    result
+]
+
+parseDecimal: function [str][
+    [whole, fraction]: split.by:"." str
+    to :rational @[to :integer whole ++ fraction, 10 ^ size fraction]
+]
+
+loop ["3.14159265358979" "2.71828182845904" "1.414213562373095"] 'x [
+    expansion: toEngel parseDecimal x
+    r: fromEngel expansion
+    fl: (to :floating to :string numerator r) // to :floating to :string denominator r
+    print ["Decimal rational:   " x]
+    print ["Engel expansion:    " expansion]
+    print ["Rational equivalent:" r]
+    print ["Floating point:     " fl]
+    print ""
+]

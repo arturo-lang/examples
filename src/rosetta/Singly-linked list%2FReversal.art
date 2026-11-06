@@ -1,0 +1,38 @@
+define :node [
+    init: constructor [value next]
+]
+
+define :list [
+    init: method [items][
+        \head: fold.seed: null reverse items [following v] ->
+            to :node @[v following]
+    ]
+
+    reverse: method [][
+        previous: null
+        current: \head
+        while [not? null? current][
+            following: current\next
+            current\next: previous
+            previous: current
+            current: following
+        ]
+        \head: previous
+    ]
+
+    string: method [][
+        items: []
+        current: \head
+        while [not? null? current][
+            'items ++ current\value
+            current: current\next
+        ]
+        join.with:" -> " items
+    ]
+]
+
+lst: to :list [["a" "b" "c" "d" "e"]]!
+print ["Original:" lst]
+
+lst\reverse
+print ["Reversed:" lst]

@@ -1,0 +1,32 @@
+wordle: function [answer, guess][
+    result: array.of: size guess "grey"
+    remaining: []
+
+    loop.with:'i guess 'ch [
+        switch ch = answer\[i]
+            -> result\[i]: "green"
+            -> 'remaining ++ answer\[i]
+    ]
+
+    loop.with:'i guess 'ch [
+        if and? result\[i] <> "green"
+                contains? remaining ch [
+            result\[i]: "yellow"
+            remove.once 'remaining ch
+        ]
+    ]
+    return result
+]
+
+tests: [
+    "ALLOW" "LOLLY"
+    "BULLY" "LOLLY"
+    "ROBIN" "ALERT"
+    "ROBIN" "SONIC"
+    "ROBIN" "ROBIN"
+]
+
+loop tests [answer, guess][
+    colors: wordle answer guess
+    print [answer guess "->" colors]
+]

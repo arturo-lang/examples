@@ -1,0 +1,49 @@
+define :buckets [
+    init: method [n, total][
+        \items: array.of: n 0
+        do.times: total [
+            i: random 0 dec n
+            \items\[i]: inc \items\[i]
+        ]
+    ]
+    transfer: method [src, dst, amount][
+        amount: min @[amount, \items\[src]]
+        \items\[src]: \items\[src] - amount
+        \items\[dst]: \items\[dst] + amount
+    ]
+    total: method [][
+        sum \items
+    ]
+    string: method [][
+        ~"|\items| total: |\total|"
+    ]
+]
+
+b: to :buckets [6 120]!
+pick2: function []->
+    @[random 0 5, random 0 5]
+
+equalizer: do.async [
+    while [true][
+        [i, j]: pick2
+        diff: (b\items\[i] - b\items\[j]) / 2
+        switch diff > 0 -> b\transfer i j diff
+                        -> b\transfer j i neg diff
+        pause 1`ms
+    ]
+]
+
+randomizer: do.async [
+    while [true][
+        [i, j]: pick2
+        b\transfer i j random 0 b\items\[i]
+        pause 1`ms
+    ]
+]
+
+do.times: 8 [
+    print b
+    pause 100`ms
+]
+
+loop @[equalizer randomizer] 't -> cancel t

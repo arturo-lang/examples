@@ -1,0 +1,36 @@
+step: function [program, n][
+    loop program 'f [
+        r: n * f
+        if 1 = denominator r -> return numerator r
+    ]
+    return null
+]
+
+fractran: function [program, n, limit][
+    result: @[n]
+    while [limit > size result][
+        n: step program n
+        if null? n -> break
+        'result ++ n
+    ]
+    return result
+]
+
+primeGame: [
+    17:91  78:85  19:51  23:38  29:33  77:29  95:23
+    77:19   1:17  11:13  13:11  15:14   15:2   55:1
+]
+
+print "First 20 steps of Conway's PRIMEGAME:"
+print fractran primeGame 2 20
+
+print ""
+print "Primes generated (exponents of the powers of 2):"
+n: 2
+primes: []
+while [20 > size primes][
+    n: step primeGame n
+    if zero? and n n-1 ->
+        'primes ++ dec size digits.base: 2 n
+]
+print primes

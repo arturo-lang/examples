@@ -1,0 +1,44 @@
+unrank: function [n, r][
+    perm: @0..dec n
+    loop n..1 'm [
+        q: r % m
+        r: r / m
+        tmp: perm\[dec m]
+        perm\[dec m]: perm\[q]
+        perm\[q]: tmp
+    ]
+    perm
+]
+
+rank: function [perm][
+    p: new perm
+    n: size p
+    inverse: array.of: n 0
+    loop 0..dec n 'i -> inverse\[p\[i]]: i
+    r: 0
+    mult: 1
+    loop n..2 'm [
+        s: p\[dec m]
+        j: inverse\[dec m]
+        p\[dec m]: p\[j]
+        p\[j]: s
+        inverse\[s]: j
+        inverse\[dec m]: dec m
+        r: r + s * mult
+        mult: mult * m
+    ]
+    r
+]
+
+print "All permutations of 3 items, with their ranks:"
+loop 0..5 'r [
+    p: unrank 3 r
+    print ["   " r "->" p "->" rank p]
+]
+
+print ""
+print "Some permutations of 12 items:"
+loop [0 1 123456 479001599] 'r [
+    p: unrank 12 r
+    print ["   " pad to :string r 9 "->" p "->" rank p]
+]

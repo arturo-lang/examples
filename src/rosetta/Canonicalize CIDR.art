@@ -1,0 +1,13 @@
+canonicalize: function [cidr][
+    [address, bits]: split.by:"/" cidr
+    ip: fold to [:integer] split.by:"." address .seed: 0 [acc octet] ->
+        octet + acc * 256
+    mask: (shl 1 32) - shl 1 32 - to :integer bits
+    ip: and ip mask
+    octets: map [24 16 8 0] 'sh -> and shr ip sh 255
+    (join.with:"." to [:string] octets) ++ "/" ++ bits
+]
+
+loop ["87.70.141.1/22" "36.18.154.103/12" "62.62.197.11/29"
+      "67.137.119.181/4" "161.214.74.21/24" "184.232.176.184/18"] 'cidr ->
+    print [pad.right cidr 18 "->" canonicalize cidr]

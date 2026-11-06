@@ -1,0 +1,10 @@
+define :node [value prev next]
+
+a: to :node @[1 null null]
+b: to :node @[2 null null]
+
+a\next: b
+b\prev: a
+
+print ["a:" a\value "-> next:" a\next\value]
+print ["b:" b\value "-> prev:" b\prev\value]

@@ -1,0 +1,25 @@
+solveQuadratic: function [a, b, c][
+    d: (b * b) - 4 * a * c
+
+    if d < 0 [
+        re: neg b / 2 * a
+        im: (sqrt neg d) / 2 * a
+        return @[to :complex @[re im], to :complex @[re, neg im]]
+    ]
+
+    q: neg (b + (sign b) * sqrt d) / 2
+    return @[q / a, c / q]
+]
+
+tests: @[
+    1.0  neg 1.0e9  1.0
+    1.0      2.0    neg 3.0
+    1.0  neg 2.0    1.0
+    1.0      2.0    3.0
+    0.5  neg 1.5    neg 2.0
+]
+
+loop tests [a, b, c][
+    roots: solveQuadratic a b c
+    print ["a:" a "b:" b "c:" c "=> roots:" roots]
+]

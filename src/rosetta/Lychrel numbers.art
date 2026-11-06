@@ -1,0 +1,36 @@
+reverseNumber: function [n]->
+    to :integer reverse to :string n
+
+palindrome?: function [n]->
+    (to :string n) = reverse to :string n
+
+limit: 10000
+iterations: 500
+
+seeds: []
+related: []
+known: #[]
+
+loop 1..limit 'n [
+    series: []
+    x: n
+    lychrel: true
+    loop 1..iterations 'it [
+        x: x + reverseNumber x
+        if palindrome? x [ lychrel: false  break ]
+        'series ++ x
+        if and? it = 3 key? known x -> break
+    ]
+    if lychrel [
+        isRelated: some? series 'v -> key? known v
+        switch isRelated [ 'related ++ n ]
+                         [ 'seeds ++ n ]
+        loop series 'v -> known\[v]: true
+    ]
+]
+
+palindromes: select sort seeds ++ related => palindrome?
+
+print [size seeds "Lychrel seeds:" seeds]
+print [size related "Lychrel related"]
+print [size palindromes "Lychrel palindromes:" palindromes]

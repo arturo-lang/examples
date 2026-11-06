@@ -1,0 +1,45 @@
+rref: function [matrix][
+    m: map matrix 'row -> to [:rational] row
+    lead: 0
+    rowCount: size m
+    columnCount: size first m
+
+    loop 0..dec rowCount 'r [
+        if lead >= columnCount -> return m
+        i: r
+        while [0 = m\[i]\[lead]][
+            i: inc i
+            if i = rowCount [
+                i: r
+                lead: inc lead
+                if lead = columnCount -> return m
+            ]
+        ]
+        tmp: m\[i]  m\[i]: m\[r]  m\[r]: tmp
+
+        divisor: m\[r]\[lead]
+        m\[r]: map m\[r] 'v -> v / divisor
+
+        loop 0..dec rowCount 'j [
+            if j <> r [
+                factor: m\[j]\[lead]
+                m\[j]: map couple m\[j] m\[r] 'pair -> pair\0 - factor * pair\1
+            ]
+        ]
+        lead: inc lead
+    ]
+    m
+]
+
+M: @[
+    @[    1  2 neg 1 neg  4]
+    @[    2  3 neg 1 neg 11]
+    @[neg 2  0 neg 3     22]
+]
+
+show: function [r]->
+    (1 = denominator r)? -> to :string numerator r
+                         -> to :string r
+
+loop rref M 'row ->
+    print map row 'x -> pad show x 4

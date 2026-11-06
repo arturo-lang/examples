@@ -1,0 +1,10 @@
+leastM: function [n][
+    f: factorial n
+    m: 1
+    while [not? prime? f + m] -> m: inc m
+    m
+]
+
+print "Least m such that n! + m is prime, for n = 0..49:"
+loop split.every: 10 map 0..49 => leastM 'row ->
+    print map row 'm -> pad to :string m 5

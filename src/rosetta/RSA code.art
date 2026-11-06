@@ -1,0 +1,24 @@
+n: 9516311845790656153499716760847001433441357
+e: 65537
+d: 5617843187844953170308463622230283376298685
+
+textToNumber: function [str]->
+    fold.seed: 0 str [acc, ch] -> (acc * 256) + to :integer ch
+
+numberToText: function [num]->
+    join to [:char] digits.base: 256 num
+
+message: "Rosetta Code"
+
+plain: textToNumber message
+ensure -> plain < n
+
+encrypted: powmod plain e n
+decrypted: powmod encrypted d n
+text: numberToText decrypted
+
+print ["Message:  " message]
+print ["As number:" plain]
+print ["Encrypted:" encrypted]
+print ["Decrypted:" decrypted]
+print ["As text:  " text]

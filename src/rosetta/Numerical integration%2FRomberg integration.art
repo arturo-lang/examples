@@ -1,0 +1,44 @@
+fmt: function [x]-> to :string .format:".8f" x
+
+romberg: function [f, a, b, steps, accuracy][
+    h0: b - a
+    s0: (call 'f @[a]) + call 'f @[b]
+    r: @[@[s0 * h0 / 2]]
+    print ["R[0] =" fmt r\0\0]
+    rr: r\0\0
+    ro: rr + 1
+    n: 1
+    i: 1
+    while [and? i < steps accuracy =< abs rr - ro][
+        ro: rr
+        n: 2 * n
+        h: h0 / n
+        s: s0 / 2
+        loop 1..dec n 'j ->
+            s: s + call 'f @[a + j * h]
+        row: @[s * h]
+        fct: 1
+        loop 1..i 'k [
+            fct: 4 * fct
+            rr: ((fct * row\[dec k]) - r\[dec i]\[dec k]) / dec fct
+            'row ++ rr
+        ]
+        'r ++ @[row]
+        cells: map row => fmt
+        print [~"R[|i|] =" join.with:" " cells]
+        i: inc i
+    ]
+    rr
+]
+
+tests: @[
+    var 'sin "sin(x)" 0.0      1.0
+    var 'exp "exp(x)" neg 3.0  3.0
+]
+
+loop tests [f, label, a, b][
+    print ["Integration of" label "over" ~"[|a|, |b|]" "with a maximum of 5 steps."]
+    result: romberg var 'f a b 5 1.0e-8
+    print ["Result:" fmt result]
+    print ""
+]

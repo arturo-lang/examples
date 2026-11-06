@@ -1,0 +1,11 @@
+meanAngle: function [angles][
+    radians: map angles 'a -> (a * pi) / 180
+    s: sum map radians => sin
+    c: sum map radians => cos
+    (angle to :complex @[c s]) * 180 / pi
+]
+
+loop [[350 10] [90 180 270 360] [10 20 30]] 'angles [
+    mean: to :string.format: ".4f" meanAngle angles
+    print ["Mean angle of" angles "is" mean]
+]

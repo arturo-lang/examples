@@ -1,0 +1,39 @@
+hex2: function [n]-> pad.with:'0' to :string .format:".x" n 2
+hex8: function [n]-> pad.with:'0' to :string .format:".x" n 8
+
+printable: function [b]->
+    (and? b >= 32 b < 127)? -> to :string to :char b
+                            -> "."
+
+hexdump: function [bytes, offset, length][
+    stop: (null? length)? -> size bytes -> min @[size bytes, offset + length]
+    pos: offset
+    while [pos < stop][
+        chunk: bytes\[pos..min @[pos + 15, dec stop]]
+        hexes: map chunk => hex2
+        hexes: hexes ++ repeat ["  "] 16 - size chunk
+        left:  join.with:" " take hexes 8
+        right: join.with:" " drop.times: 8 hexes
+        text:  join map chunk => printable
+        print (hex8 pos) ++ "  " ++ left ++ "  " ++ right ++ "  |" ++ text ++ "|"
+        pos: pos + 16
+    ]
+    print hex8 stop
+]
+
+utf16le: function [s][
+    result: [255 254]
+    loop split s 'ch [
+        cp: to :integer to :char ch
+        units: (cp < 0x10000)? -> @[cp]
+                              -> @[0xD800 + shr cp - 0x10000 10, 0xDC00 + and cp - 0x10000 0x3FF]
+        loop units 'u -> result: result ++ @[and u 255, shr u 8]
+    ]
+    result
+]
+
+bytes: utf16le "Rosetta Code is a programming chrestomathy site 😀."
+hexdump bytes 0 null
+print ""
+print "From offset 20, 25 bytes:"
+hexdump bytes 20 25

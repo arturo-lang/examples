@@ -1,0 +1,22 @@
+simulate: function [pile, sailors][
+    hidden: []
+    do.times: sailors [
+        if 1 <> pile % sailors -> return null
+        share: (dec pile) / sailors
+        'hidden ++ share
+        pile: (dec pile) - share
+    ]
+    if or? zero? pile  0 <> pile % sailors -> return null
+    @[hidden pile / sailors]
+]
+
+loop [5 6] 'sailors [
+    pile: 1
+    while [null? simulate pile sailors] -> pile: inc pile
+    [hidden, morning]: simulate pile sailors
+    print ["Sailors:" sailors]
+    print ["    minimum initial pile:" pile]
+    print ["    hidden by each during the night:" hidden]
+    print ["    each one's share in the morning:" morning]
+    print ""
+]

@@ -1,0 +1,43 @@
+placements: function [cells, blocks][
+    if empty? blocks -> return [[]]
+    current: first blocks
+    others: drop blocks
+    needed: (sum others) + size others
+    lastStart: (cells - current) - needed
+    if lastStart < 0 -> return []
+
+    result: []
+    loop 0..lastStart 'start [
+        offset: inc start + current
+        loop placements (cells - offset) others 'placed [
+            shifted: map placed 'p -> p + offset
+            'result ++ @[@[start] ++ shifted]
+        ]
+    ]
+    result
+]
+
+showRow: function [cells, blocks, starts][
+    row: array.of: cells "_"
+    if empty? starts -> return "|" ++ (join.with:"|" row) ++ "|"
+    loop.with:'i starts 'start ->
+        loop start..dec start + blocks\[i] 'c ->
+            row\[c]: to :string to :char 65 + i
+    "|" ++ (join.with:"|" row) ++ "|"
+]
+
+configs: [
+    5  [2 1]
+    5  []
+    10 [8]
+    15 [2 3 2 3]
+    5  [2 3]
+]
+
+loop configs [cells, blocks][
+    print ["Configuration:" cells "cells and" blocks "blocks"]
+    found: placements cells blocks
+    loop found 'starts -> print ["   " showRow cells blocks starts]
+    print ["A total of" size found "possible configurations."]
+    print ""
+]

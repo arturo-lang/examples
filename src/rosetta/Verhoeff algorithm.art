@@ -1,0 +1,44 @@
+toTable: function [rows]->
+    map rows 'row -> map split row => [to :integer &]
+
+D: toTable ["0123456789" "1234067895" "2340178956" "3401289567" "4012395678"
+            "5987604321" "6598710432" "7659821043" "8765932104" "9876543210"]
+
+P: toTable ["0123456789" "1576283094" "5803796142" "8916043527"
+            "9453126870" "4286573901" "2793806415" "7046913258"]
+
+INV: [0 4 3 2 1 5 6 7 8 9]
+
+verhoeff: function [str, generate, verbose][
+    s: (generate)? -> str ++ "0" -> str
+    c: 0
+    if verbose ->
+        print ["Calculating" (generate)? -> "check digit" -> "validity" "for" str]
+
+    loop.with:'i reverse split s 'ch [
+        ni: to :integer ch
+        p: P\[i % 8]\[ni]
+        c: D\[c]\[p]
+        if verbose ->
+            print [
+                pad to :string i 6
+                pad to :string ni 3
+                pad to :string p 3
+                pad to :string c 3
+            ]
+    ]
+
+    return (generate)? -> to :string INV\[c] -> zero? c
+]
+
+loop @["236" true "12345" true "123456789012" false] [str, verbose][
+    checkDigit: verhoeff str true verbose
+    print ["The check digit for" str "is" checkDigit]
+    print ""
+
+    loop @[str ++ checkDigit, str ++ "9"] 'candidate [
+        valid?: verhoeff candidate false verbose
+        print [candidate "is" (valid?)? -> "valid" -> "invalid"]
+        print ""
+    ]
+]

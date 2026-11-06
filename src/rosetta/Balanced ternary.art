@@ -1,0 +1,80 @@
+fromInteger: function [n][
+    result: []
+    while [n <> 0][
+        r: n % 3
+        if r < 0 -> r: r + 3
+        switch r = 2 [
+            'result ++ neg 1
+            n: (n + 1) / 3
+        ][
+            'result ++ r
+            n: (n - r) / 3
+        ]
+    ]
+    result
+]
+
+toInteger: function [bt]->
+    fold reverse bt .seed: 0 [acc d] -> d + 3 * acc
+
+fromString: function [s]->
+    reverse map split s 'ch -> case ch [
+        "+" -> 1
+        "-" -> neg 1
+        any -> 0
+    ]
+
+toString: function [bt][
+    if empty? bt -> return "0"
+    join map reverse bt 'd -> case d [
+        1   -> "+"
+        0   -> "0"
+        any -> "-"
+    ]
+]
+
+trimBT: function [bt][
+    while [and? [not? empty? bt] [zero? last bt]] ->
+        bt: chop bt
+    bt
+]
+
+negateBT: function [bt]->
+    map bt => neg
+
+addBT: function [a, b][
+    result: []
+    carry: 0
+    loop 0..dec max @[size a, size b] 'i [
+        da: (i < size a)? -> a\[i] -> 0
+        db: (i < size b)? -> b\[i] -> 0
+        s: da + db + carry
+        carry: 0
+        if s > 1 [ s: s - 3  carry: 1 ]
+        if s < neg 1 [ s: s + 3  carry: neg 1 ]
+        'result ++ s
+    ]
+    if carry <> 0 -> 'result ++ carry
+    trimBT result
+]
+
+multiplyBT: function [a, b][
+    result: []
+    loop a 'd [
+        if d = 1 -> result: addBT result b
+        if d = neg 1 -> result: addBT result negateBT b
+        b: [0] ++ b
+    ]
+    result
+]
+
+a: fromString "+-0++0+"
+b: fromInteger neg 436
+c: fromString "+-++-"
+
+print ["a:" toInteger a toString a]
+print ["b:" toInteger b toString b]
+print ["c:" toInteger c toString c]
+
+r: multiplyBT a addBT b negateBT c
+print ["a * (b - c):" toInteger r toString r]

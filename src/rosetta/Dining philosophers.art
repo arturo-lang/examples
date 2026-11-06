@@ -1,0 +1,27 @@
+philosophers: ["Aristotle" "Kant" "Spinoza" "Marx" "Russell"]
+
+forks: map 0..4 'i -> channel.bounded: 1 ~"fork|i|"
+loop forks 'f -> send f true
+
+tasks: map.with:'i philosophers 'name [
+    low:  min @[i, (inc i) % 5]
+    high: max @[i, (inc i) % 5]
+
+    do.async [
+        do.times: 2 [
+            print [name "is thinking"]
+            pause random 10 50
+
+            receive forks\[low]
+            receive forks\[high]
+            print [name "is eating"]
+            pause random 10 50
+            print [name "is done eating"]
+
+            send forks\[high] true
+            send forks\[low] true
+        ]
+    ]
+]
+
+wait.all tasks

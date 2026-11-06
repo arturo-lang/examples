@@ -1,0 +1,20 @@
+primes: select 2..10000019 => prime?
+
+strong: []
+weak: []
+loop 1..(size primes) - 2 'i [
+    twice: 2 * primes\[i]
+    around: primes\[dec i] + primes\[inc i]
+    if twice > around -> 'strong ++ primes\[i]
+    if twice < around -> 'weak ++ primes\[i]
+]
+
+print "The first 36 strong primes:"
+print first.n: 36 strong
+print ["Strong primes below  1,000,000:" enumerate strong => [& < 1000000]]
+print ["Strong primes below 10,000,000:" enumerate strong => [& < 10000000]]
+print ""
+print "The first 37 weak primes:"
+print first.n: 37 weak
+print ["Weak primes below  1,000,000:" enumerate weak => [& < 1000000]]
+print ["Weak primes below 10,000,000:" enumerate weak => [& < 10000000]]

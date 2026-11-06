@@ -1,0 +1,52 @@
+small: [
+    "zero" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine" "ten"
+    "eleven" "twelve" "thirteen" "fourteen" "fifteen" "sixteen" "seventeen"
+    "eighteen" "nineteen"
+]
+
+tens: ["" "" "twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"]
+
+scales: ["" "thousand" "million" "billion" "trillion" "quadrillion" "quintillion"]
+
+cardinal: function [n][
+    if n < 0 -> return "negative " ++ cardinal neg n
+    if n < 20 -> return small\[n]
+
+    if n < 100 [
+        d: n / 10
+        m: n % 10
+        return tens\[d] ++ (zero? m)? -> "" -> "-" ++ small\[m]
+    ]
+
+    if n < 1000 [
+        d: n / 100
+        m: n % 100
+        return small\[d] ++ " hundred" ++ (zero? m)? -> "" -> " " ++ cardinal m
+    ]
+
+    words: []
+    loop.with:'i reverse digits.base: 1000 n 'triplet [
+        unless zero? triplet [
+            name: cardinal triplet
+            unless empty? scales\[i] ->
+                name: name ++ " " ++ scales\[i]
+            'words ++ name
+        ]
+    ]
+    return join.with: " " reverse words
+]
+
+fourIsMagic: function [n][
+    phrases: []
+    current: cardinal n
+    while [current <> "four"][
+        next: cardinal size current
+        'phrases ++ current ++ " is " ++ next
+        current: next
+    ]
+    'phrases ++ "four is magic."
+    return capitalize join.with: ", " phrases
+]
+
+loop @[0 1 2 3 4 5 6 7 8 9 11 13 21 100 999 1000 123456789 neg 42 9223372036854775807] 'n ->
+    print fourIsMagic n

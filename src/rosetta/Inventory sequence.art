@@ -1,0 +1,27 @@
+inventory: []
+counts: #[]
+countOf: function [n]->
+    (key? counts n)? -> counts\[n]
+                     -> 0
+
+goals: map 1..10 'x -> 1000 * x
+current: 0
+while [not? empty? goals][
+    c: countOf current
+    'inventory ++ c
+    counts\[c]: inc countOf c
+    current: (zero? c)? -> 0 -> inc current
+    if c >= first goals [
+        print [
+            "First element >=" pad to :string first goals 5
+            ":" pad to :string c 5
+            "at index" dec size inventory
+        ]
+        goals: drop goals
+    ]
+]
+
+print ""
+print "First 100 elements:"
+loop split.every: 10 first.n: 100 inventory 'row ->
+    print map row 'x -> pad to :string x 4

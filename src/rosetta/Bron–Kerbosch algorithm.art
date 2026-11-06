@@ -1,0 +1,38 @@
+edges: [
+    "a" "b"
+    "a" "c"
+    "b" "c"
+    "d" "e"
+    "d" "f"
+    "e" "f"
+]
+
+neighbours: #[]
+loop unique edges 'vertex ->
+    neighbours\[vertex]: []
+
+loop edges [u, v][
+    neighbours\[u]: neighbours\[u] ++ v
+    neighbours\[v]: neighbours\[v] ++ u
+]
+
+cliques: []
+
+bronKerbosch: function [R, P, X][
+    if and? empty? P empty? X [
+        'cliques ++ @[R]
+        return null
+    ]
+    pivot: first union P X
+    loop difference P neighbours\[pivot] 'v [
+        bronKerbosch R ++ v intersection P neighbours\[v] intersection X neighbours\[v]
+        P: difference P @[v]
+        X: X ++ v
+    ]
+]
+
+bronKerbosch [] keys neighbours []
+
+print "Maximal cliques:"
+loop cliques 'clique ->
+    print join.with:", " map sort clique => upper

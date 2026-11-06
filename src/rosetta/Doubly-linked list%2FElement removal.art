@@ -1,0 +1,50 @@
+define :node [
+    init: constructor [value prev next]
+]
+
+define :list [
+    init: method [items][
+        \head: null
+        \tail: null
+        loop items 'value [
+            item: to :node @[value null null]
+            item\prev: \tail
+            switch null? \tail [ \head: item ]
+                               [ \tail\next: item ]
+            \tail: item
+        ]
+    ]
+
+    removeNode: method [node][
+        switch null? node\prev [ \head: node\next ]
+                               [ node\prev\next: node\next ]
+        switch null? node\next [ \tail: node\prev ]
+                               [ node\next\prev: node\prev ]
+    ]
+
+    chain: method [start, link][
+        items: []
+        current: start
+        while [not? null? current][
+            'items ++ current\value
+            current: current\[link]
+        ]
+        join.with:" <-> " to [:string] items
+    ]
+
+    string: method [][
+        \chain \head "next"
+    ]
+]
+
+lst: to :list [[1 2 3 4 5]]!
+print ["Initial:          " lst "/" lst\chain lst\tail "prev"]
+
+lst\removeNode lst\head\next\next
+print ["Removing 3:       " lst "/" lst\chain lst\tail "prev"]
+
+lst\removeNode lst\head
+print ["Removing the head:" lst "/" lst\chain lst\tail "prev"]
+
+lst\removeNode lst\tail
+print ["Removing the tail:" lst "/" lst\chain lst\tail "prev"]

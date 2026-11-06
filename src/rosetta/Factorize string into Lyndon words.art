@@ -1,0 +1,25 @@
+lyndonFactorization: function [s][
+    n: size s
+    i: 0
+    factors: []
+    while [i < n][
+        j: inc i
+        k: i
+        while [and? -> j < n -> s\[k] =< s\[j]][
+            k: (s\[k] < s\[j])? -> i -> inc k
+            j: inc j
+        ]
+        while [i =< k][
+            'factors ++ slice s i dec i + j - k
+            i: i + j - k
+        ]
+    ]
+    factors
+]
+
+thueMorse: "0"
+do.times: 7 ->
+    thueMorse: thueMorse ++ translate thueMorse #["0": "1" "1": "0"]
+
+loop lyndonFactorization thueMorse 'w ->
+    print w

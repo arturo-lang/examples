@@ -1,0 +1,9 @@
+decimalToRational: function [str][
+    [whole, decimals]: split.by:"." str
+    num: to :integer whole ++ decimals
+    den: 10 ^ size decimals
+    to :rational @[num den]
+]
+
+loop ["0.9054054" "0.518518" "0.75" "0.1428571" "35.000" "35.001" "0.9" "0.99" "0.909"] 'd ->
+    print [pad d 10 "->" decimalToRational d]

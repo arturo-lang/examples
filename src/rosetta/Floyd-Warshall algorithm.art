@@ -1,0 +1,50 @@
+floydWarshall: function [n, edges][
+    dist: map 1..n 'i -> map 1..n 'j -> (i = j)? -> 0 -> ∞
+    nxt: map 1..n 'i -> map 1..n 'j -> neg 1
+
+    loop edges [u v w][
+        dist\[dec u]\[dec v]: w
+        nxt\[dec u]\[dec v]: dec v
+    ]
+
+    loop 0..dec n 'k ->
+        loop 0..dec n 'i ->
+            loop 0..dec n 'j [
+                if dist\[i]\[j] > dist\[i]\[k] + dist\[k]\[j] [
+                    dist\[i]\[j]: dist\[i]\[k] + dist\[k]\[j]
+                    nxt\[i]\[j]: nxt\[i]\[k]
+                ]
+            ]
+
+    #[dist: dist, nxt: nxt]
+]
+
+pathBetween: function [nxt, u, v][
+    result: @[u]
+    while [u <> v][
+        u: nxt\[u]\[v]
+        'result ++ u
+    ]
+    join.with:" -> " map result 'x -> to :string inc x
+]
+
+edges: @[
+    1 3 neg 2
+    2 1     4
+    2 3     3
+    3 4     2
+    4 2 neg 1
+]
+
+n: 4
+fw: floydWarshall n edges
+
+print "pair     dist    path"
+loop 0..dec n 'i ->
+    loop 0..dec n 'j ->
+        if i <> j ->
+            print [
+                ~"|i+1| -> |j+1|"
+                pad to :string fw\dist\[i]\[j] 5 "   "
+                pathBetween fw\nxt i j
+            ]

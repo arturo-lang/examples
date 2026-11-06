@@ -1,0 +1,63 @@
+printLine: function [line][
+    loop split line 'ch [
+        prints ch
+        pause 1
+    ]
+    print ""
+]
+
+monitor: function [fallback][
+    requests: channel 'requests
+    do.async [
+        ink: 5
+        while [not? null? request: <= receive requests][
+            switch ink > 0 [
+                printLine request\0
+                ink: dec ink
+                send request\1 true
+            ][
+                switch null? fallback -> send request\1 false
+                                      -> send fallback request
+            ]
+        ]
+    ]
+    requests
+]
+
+reserve: monitor null
+primary: monitor reserve
+
+writer: function [lines][
+    do.async [
+        reply: channel 'reply
+        loop lines 'line [
+            send primary @[line reply]
+            unless receive reply ->
+                throw "Out of ink"
+        ]
+    ]
+]
+
+humpty: [
+    "Humpty Dumpty sat on a wall."
+    "Humpty Dumpty had a great fall."
+    "All the king's horses and all the king's men,"
+    "Couldn't put Humpty together again."
+]
+
+goose: [
+    "Old Mother Goose,"
+    "When she wanted to wander,"
+    "Would ride through the air,"
+    "On a very fine gander."
+    "Jack's mother came in,"
+    "And caught the goose soon,"
+    "And mounting its back,"
+    "Flew up to the moon."
+]
+
+results: wait.all @[writer humpty writer goose]
+
+loop results 'result ->
+    if error? result ->
+        print first split.lines result\message

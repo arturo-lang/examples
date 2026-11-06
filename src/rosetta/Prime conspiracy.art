@@ -1,0 +1,13 @@
+primes: select 2..15485863 => prime?
+lastDigits: map primes 'p -> p % 10
+
+transitions: tally map 1..dec size lastDigits 'i ->
+    ~"|lastDigits\[dec i]| -> |lastDigits\[i]|"
+
+total: dec size primes
+print ["Transitions of the last digit between consecutive primes, for the first" size primes "primes:"]
+loop sort keys transitions 'key [
+    freq: 100 * transitions\[key] // total
+    print [key "count:" pad to :string transitions\[key] 7
+           "frequency:" pad to :string .format:".2f" freq 5 "%"]
+]

@@ -1,0 +1,58 @@
+cplx: function [re, im]-> to :complex @[re im]
+
+conjugateTranspose: function [m]->
+    map 0..dec size first m 'j ->
+        map 0..dec size m 'i -> conj m\[i]\[j]
+
+multiply: function [a, b]->
+    map 0..dec size a 'i ->
+        map 0..dec size first b 'j ->
+            fold 0..dec size b .seed: cplx 0 0 [acc k] ->
+                acc + a\[i]\[k] * b\[k]\[j]
+
+identity: function [n]->
+    map 0..dec n 'i ->
+        map 0..dec n 'j ->
+            (i = j)? -> cplx 1 0 -> cplx 0 0
+
+approxEqual?: function [a, b]->
+    every? 0..dec size a 'i ->
+        every? 0..dec size a\[i] 'j ->
+            1.0e-9 > abs a\[i]\[j] - b\[i]\[j]
+
+fmt: function [x]-> to :string .format:"7.4f" x
+
+showMatrix: function [m]->
+    loop m 'row ->
+        print join map row 'c -> ~"(|fmt c\re|, |fmt c\im|)"
+
+r: 1 / sqrt 2
+
+matrices: @[
+    @[
+        @[cplx 3 0,     cplx 2 1]
+        @[cplx 2 neg 1, cplx 1 0]
+    ]
+    @[
+        @[cplx 1 0, cplx 1 0, cplx 0 0]
+        @[cplx 0 0, cplx 1 0, cplx 1 0]
+        @[cplx 1 0, cplx 0 0, cplx 1 0]
+    ]
+    @[
+        @[cplx r 0, cplx r 0,     cplx 0 0]
+        @[cplx 0 r, cplx 0 neg r, cplx 0 0]
+        @[cplx 0 0, cplx 0 0,     cplx 0 1]
+    ]
+]
+
+loop matrices 'm [
+    mh: conjugateTranspose m
+    print "Matrix:"
+    showMatrix m
+    print "Conjugate transpose:"
+    showMatrix mh
+    print ["Hermitian:" approxEqual? m mh]
+    print ["Normal:   " approxEqual? multiply m mh multiply mh m]
+    print ["Unitary:  " approxEqual? multiply mh m identity size m]
+    print ""
+]

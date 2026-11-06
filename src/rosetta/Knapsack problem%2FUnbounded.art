@@ -1,0 +1,36 @@
+items: [
+    "panacea"   3000     3       25
+    "ichor"     1800     2       15
+    "gold"      2500    20        2
+]
+
+maxWeight: 250
+maxVolume: 250
+
+[pValue, pWeight, pVolume]: slice items 1 3
+[iValue, iWeight, iVolume]: slice items 5 7
+[gValue, gWeight, gVolume]: slice items 9 11
+
+bestValue: 0
+solutions: []
+
+loop 0..maxWeight / pWeight 'p [
+    loop 0..maxWeight / iWeight 'i [
+        loop 0..maxWeight / gWeight 'g [
+            weight: (p * pWeight) + (i * iWeight) + g * gWeight
+            volume: (p * pVolume) + (i * iVolume) + g * gVolume
+            if and? weight =< maxWeight volume =< maxVolume [
+                value: (p * pValue) + (i * iValue) + g * gValue
+                if value > bestValue [
+                    bestValue: value
+                    solutions: []
+                ]
+                if value = bestValue -> 'solutions ++ @[p i g]
+            ]
+        ]
+    ]
+]
+
+print ["Maximum value:" bestValue]
+loop solutions [p, i, g] ->
+    print ["  panacea:" p "ichor:" i "gold:" g]

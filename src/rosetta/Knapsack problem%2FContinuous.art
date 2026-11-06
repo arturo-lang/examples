@@ -1,0 +1,36 @@
+items: [
+    "beef"    3.8  36
+    "pork"    5.4  43
+    "ham"     3.6  90
+    "greaves" 2.4  45
+    "flitch"  4.0  30
+    "brawn"   2.5  56
+    "welt"    3.7  67
+    "salami"  3.0  95
+    "sausage" 5.9  98
+]
+
+goods: map items [n, w, v] -> #[
+    name: n
+    weight: w
+    value: v
+    ratio: v / w
+]
+
+capacity: 15.0
+total: 0.0
+
+loop sort.descending.by: "ratio" goods 'item [
+    if zero? capacity -> break
+    taken: min @[item\weight, capacity]
+    gain: taken * item\ratio
+    print [
+        pad.right item\name 8
+        pad to :string.format: ".1f" taken 4 "kg"
+        pad to :string.format: ".2f" gain 7
+    ]
+    capacity: capacity - taken
+    total: total + gain
+]
+
+print ["Total value:" to :string.format: ".2f" total]

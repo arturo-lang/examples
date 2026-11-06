@@ -1,0 +1,35 @@
+earthRadius: 6371`km
+plane: [51.514669 2.198581]
+
+rad: function [d]->
+    d * pi / 180
+
+distanceAndBearing: function [lat1, lon1, lat2, lon2][
+    p1: rad lat1
+    p2: rad lat2
+    dlat: rad lat2 - lat1
+    dlon: rad lon2 - lon1
+    a: ((sin dlat / 2) ^ 2) + (cos p1) * (cos p2) * (sin dlon / 2) ^ 2
+    y: (sin dlon) * cos p2
+    x: ((cos p1) * sin p2) - (sin p1) * (cos p2) * cos dlon
+    dist: (earthRadius * 2 * asin sqrt a) --> `nmi
+    @[to :floating scalar dist, (360 + (angle to :complex @[x y]) * 180 / pi) % 360]
+]
+
+airports: read.csv "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat"
+
+report: map airports 'row [
+    [dist, bearing]: distanceAndBearing plane\0 plane\1 to :floating row\6 to :floating row\7
+    @[row\1 row\3 row\5 dist bearing]
+]
+
+nearest: flatten first.n: 20 arrange report 'r -> r\3
+
+print [pad.right "Airport" 40 pad.right "Country" 16 pad.right "ICAO" 6 pad "Distance" 10 pad "Bearing" 8]
+print repeat "-" 84
+loop nearest [name, country, icao, dist, bearing] [
+    nm:  to :string .format:".1f" dist
+    deg: (round bearing) * 1`deg
+    print [pad.right name 40 pad.right country 16 pad.right icao 6
+           pad nm 6 "nmi" pad to :string deg 6]
+]

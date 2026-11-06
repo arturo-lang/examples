@@ -1,0 +1,21 @@
+wiki: "https://rosettacode.org/w/"
+members: "api.php?action=query&format=json&list=categorymembers&cmlimit=500&cmtitle=Category:Programming_Tasks"
+
+tasks: []
+cont: ""
+while [not? null? cont][
+    data: read.json ~"|wiki||members||cont|"
+    'tasks ++ map data\query\categorymembers 'member -> member\title
+    cont: (key? data "continue")? -> "&cmcontinue=" ++ encode.url data\continue\cmcontinue
+                                  -> null
+]
+
+counts: map.parallel: 8 tasks 'task [
+    page: read ~"|wiki|index.php?action=raw&title=|encode.url task|"
+    dec size split.by:"=={{header|" page
+]
+
+loop flatten couple tasks counts [task, examples] ->
+    print [task "->" examples "examples"]
+
+print ["Total:" sum counts "examples"]

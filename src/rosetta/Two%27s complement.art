@@ -1,0 +1,11 @@
+twosComplement: function [x]-> inc not x
+
+loop @[0 1 5 42 neg 7 neg 128 2147483647] 'x [
+    y: twosComplement x
+    binary: pad.with:'0' to :string .format:".b" and y 0xFFFFFFFF 32
+    print [
+        pad to :string x 11 "->" pad to :string y 11
+        "  32-bit:" binary
+        "  equals -x:" y = neg x
+    ]
+]

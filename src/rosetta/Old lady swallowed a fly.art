@@ -1,0 +1,31 @@
+animals: #[
+    fly:    ""
+    spider: "It wriggled and jiggled and tickled inside her."
+    bird:   "How absurd, to swallow a bird."
+    cat:    "Imagine that, she swallowed a cat."
+    dog:    "What a hog, to swallow a dog."
+    goat:   "She just opened her throat and swallowed that goat."
+    cow:    "I don't know how she swallowed that cow."
+    horse:  "She's dead, of course."
+]
+
+names: keys animals
+
+loop 0..dec size names 'i [
+    animal: names\[i]
+    comment: animals\[animal]
+    print ~"There was an old lady who swallowed a |animal|."
+    unless empty? comment -> print comment
+    if animal = "horse" -> break
+
+    if i > 0 ->
+        loop i..1 'j [
+            catcher: names\[j]
+            swallowed: names\[dec j]
+            extra: (swallowed = "spider")? -> " that wriggled and jiggled and tickled inside her" -> ""
+            print ~"She swallowed the |catcher| to catch the |swallowed||extra|."
+        ]
+    print "I don't know why she swallowed the fly."
+    print "Perhaps she'll die."
+    print ""
+]

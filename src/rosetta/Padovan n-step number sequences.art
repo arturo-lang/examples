@@ -1,0 +1,21 @@
+padovanNStep: function [maxN, t][
+    sequences: []
+    previous: [1 1 1]
+    loop 2..maxN 'n [
+        current: first.n: inc n previous
+        while [t > size current][
+            l: size current
+            'current ++ sum slice current l - inc n l-2
+        ]
+        'sequences ++ @[first.n: t current]
+        previous: current
+    ]
+    sequences
+]
+
+print " n | Values"
+print "---+----------------------------------------------------------"
+loop.with:'i padovanNStep 8 15 'row [
+    terms: join.with:", " to [:string] row
+    print [pad to :string i+2 2 "|" terms]
+]

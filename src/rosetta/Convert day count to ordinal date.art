@@ -1,0 +1,38 @@
+leapYear?: function [y]->
+    and? zero? y % 4 or? not? zero? y % 100 zero? y % 400
+
+yearLength: function [y]->
+    (leapYear? y)? -> 366 -> 365
+
+daysInMonth: function [y, m][
+    if m = 2 -> return (leapYear? y)? -> 29 -> 28
+    (contains? [4 6 9 11] m)? -> 30 -> 31
+]
+
+dayCountToDate: function [days][
+    y: 0
+    while [days >= yearLength y][
+        days: days - yearLength y
+        y: inc y
+    ]
+    m: 1
+    while [days >= daysInMonth y m][
+        days: days - daysInMonth y m
+        m: inc m
+    ]
+    @[inc days, m, y]
+]
+
+months: ["Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec"]
+
+loop [0 59 60 365 366 109573 146096] 'dc [
+    [d, m, y]: dayCountToDate dc
+    dd:   pad.with:'0' to :string d 2
+    mm:   pad.with:'0' to :string m 2
+    yyyy: pad.with:'0' to :string y 4
+    print [
+        pad to :string dc 6 "->"
+        ~"DD=|dd|, MM=|mm|, YYYY=|y|;"
+        ~"|dd|/|months\[dec m]|/epoch+|yyyy|"
+    ]
+]

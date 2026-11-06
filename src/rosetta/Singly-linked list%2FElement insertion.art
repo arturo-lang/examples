@@ -1,0 +1,23 @@
+define :node [
+    init: constructor [value next]
+
+    insertAfter: method [value][
+        \next: to :node @[value \next]!
+    ]
+
+    string: method [][
+        items: []
+        current: this
+        while [not? null? current][
+            'items ++ current\value
+            current: current\next
+        ]
+        join.with:" -> " items
+    ]
+]
+
+lst: to :node @["A" to :node @["B" null]!]!
+print lst
+
+lst\insertAfter "C"
+print lst

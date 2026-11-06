@@ -1,0 +1,65 @@
+precedence: #[
+    "^": 4
+    "*": 3
+    "/": 3
+    "+": 2
+    "-": 2
+]
+
+row: function [token, action, rpn, stack][
+    print [pad.right token 6 pad.right action 22 pad.right rpn 30 stack]
+]
+
+define :shunter [
+    init: method [][
+        \output: []
+        \ops: []
+    ]
+
+    moveTop: method [][
+        \output: \output ++ last \ops
+        \ops: chop \ops
+    ]
+
+    yields?: method [token][
+        top: last \ops
+        unless key? precedence top -> return false
+        or? -> precedence\[top] > precedence\[token]
+            -> and? -> precedence\[top] = precedence\[token]
+                    -> token <> "^"
+    ]
+
+    feed: method [token][
+        case token [
+            "(" [
+                \ops: \ops ++ token
+                return "push parenthesis"
+            ]
+            ")" [
+                while [(last \ops) <> "("] -> \moveTop
+                \ops: chop \ops
+                return "pop until '('"
+            ]
+        ]
+        unless key? precedence token [
+            \output: \output ++ token
+            return "add number to output"
+        ]
+        while [and? -> not? empty? \ops -> \yields? token] -> \moveTop
+        \ops: \ops ++ token
+        "push operator"
+    ]
+
+    parse: method [expr][
+        row "Token" "Action" "RPN output" "Operator stack"
+        loop split.words expr 'token [
+            action: \feed token
+            row token action join.with:" " \output join.with:" " \ops
+        ]
+        while [not? empty? \ops] -> \moveTop
+        join.with:" " \output
+    ]
+]
+
+shunter: to :shunter []!
+print ["Postfix:" shunter\parse "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3"]

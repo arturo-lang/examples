@@ -1,0 +1,56 @@
+top: ["E" "T" "" "A" "O" "N" "" "R" "I" "S"]
+rows: #[
+    "2": ["B" "C" "D" "F" "G" "H" "J" "K" "L" "M"]
+    "6": ["P" "Q" "U" "V" "W" "X" "Y" "Z" "." "/"]
+]
+
+codeOf: function [ch][
+    i: index top ch
+    unless null? i -> return to :string i
+    loop keys rows 'r [
+        i: index rows\[r] ch
+        unless null? i -> return r ++ to :string i
+    ]
+    null
+]
+
+encrypt: function [text][
+    result: ""
+    loop split upper text 'ch [
+        if numeric? ch [
+            'result ++ (codeOf "/") ++ ch
+            continue
+        ]
+        code: codeOf ch
+        unless null? code -> 'result ++ code
+    ]
+    result
+]
+
+decrypt: function [code][
+    result: ""
+    ds: split code
+    i: 0
+    while [i < size ds][
+        d: ds\[i]
+        switch key? rows d [
+            ch: rows\[d]\[to :integer ds\[inc i]]
+            i: i + 2
+            if ch = "/" [
+                ch: ds\[i]
+                i: inc i
+            ]
+            'result ++ ch
+        ][
+            'result ++ top\[to :integer d]
+            i: inc i
+        ]
+    ]
+    result
+]
+
+message: "One night-it was on the twentieth of March, 1888-I was returning"
+encrypted: encrypt message
+print ["Message:  " message]
+print ["Encrypted:" encrypted]
+print ["Decrypted:" decrypt encrypted]

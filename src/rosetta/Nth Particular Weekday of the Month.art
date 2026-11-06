@@ -1,0 +1,15 @@
+weekdays: ["Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday"]
+
+nthWeekday: function [n, weekday, month, year][
+    day1: to :date.format:"yyyy-M-d" ~"|year|-|month|-1"
+    offset: (7 + (index weekdays weekday) - index weekdays day1\Day) % 7
+    inc offset + 7 * dec n
+]
+
+print "Thanksgiving Day:"
+print "Year  Canadian  American"
+loop 2020..2030 'y [
+    canadian: nthWeekday 2 "Monday" 10 y
+    american: nthWeekday 4 "Thursday" 11 y
+    print [y "   Oct" pad to :string canadian 2 "   Nov" pad to :string american 2]
+]

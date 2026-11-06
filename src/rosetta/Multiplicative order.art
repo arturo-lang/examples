@@ -1,0 +1,30 @@
+orderPrimePower: function [a, p, k][
+    m: p ^ k
+    t: (p - 1) * p ^ dec k
+    loop unique factors.prime t 'q [
+        while [and? zero? t % q 1 = powmod a t / q m] ->
+            t: t / q
+    ]
+    t
+]
+
+multiplicativeOrder: function [a, m][
+    powers: tally factors.prime m
+    lcm map keys powers 'p ->
+        orderPrimePower a to :integer p powers\[p]
+]
+
+tests: @[
+    37              1000
+    37              3343
+    inc 10 ^ 100    7919
+    inc 10 ^ 1000   15485863
+    dec 10 ^ 10000  22801763489
+    1511678068      7379191741
+    3047753288      2257683301
+]
+
+loop tests [a, m] [
+    shown: (a > 10^12)? -> "[big]" -> to :string a
+    print [~"ord(|shown|) mod" m "=" multiplicativeOrder a m]
+]

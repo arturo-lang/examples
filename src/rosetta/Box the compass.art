@@ -1,0 +1,28 @@
+points: [
+    "North" "North by east" "North-northeast" "Northeast by north"
+    "Northeast" "Northeast by east" "East-northeast" "East by north"
+    "East" "East by south" "East-southeast" "Southeast by east"
+    "Southeast" "Southeast by south" "South-southeast" "South by east"
+    "South" "South by west" "South-southwest" "Southwest by south"
+    "Southwest" "Southwest by west" "West-southwest" "West by south"
+    "West" "West by north" "West-northwest" "Northwest by west"
+    "Northwest" "Northwest by north" "North-northwest" "North by west"
+]
+
+compassIndex: function [heading]->
+    (to :integer round heading // 11.25) % 32
+
+loop 0..32 'i [
+    heading: i * 11.25
+    case i % 3 [
+        1 -> 'heading + 5.62
+        2 -> 'heading - 5.62
+    ]
+
+    idx: compassIndex heading
+    print [
+        pad to :string idx+1 2
+        pad.right points\[idx] 20
+        pad to :string heading 6
+    ]
+]

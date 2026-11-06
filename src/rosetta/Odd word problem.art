@@ -1,0 +1,38 @@
+letter?: function [ch]->
+    or? lower? ch upper? ch
+
+forward: function [stream][
+    ch: receive stream
+    while [letter? ch][
+        prints ch
+        ch: receive stream
+    ]
+    ch
+]
+
+backward: function [stream][
+    ch: receive stream
+    unless letter? ch -> return ch
+    punct: backward stream
+    prints ch
+    punct
+]
+
+oddWord: function [text][
+    stream: channel 'stream
+    producer: do.async [
+        loop text 'ch -> send stream ch
+    ]
+    flipped: false
+    while [true][
+        punct: (flipped)? -> backward stream -> forward stream
+        prints punct
+        if punct = '.' -> break
+        flipped: not? flipped
+    ]
+    print ""
+    wait producer
+]
+
+oddWord "what,is,the;meaning,of:life."
+oddWord "we,are;not,in,kansas;any,more."

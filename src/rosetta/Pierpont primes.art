@@ -1,0 +1,26 @@
+threeSmooth: function [limit][
+    h: [1]
+    i2: 0
+    i3: 0
+    while [limit > size h][
+        a: 2 * h\[i2]
+        b: 3 * h\[i3]
+        nxt: min @[a b]
+        'h ++ nxt
+        if a = nxt -> i2: inc i2
+        if b = nxt -> i3: inc i3
+    ]
+    h
+]
+
+smooth: threeSmooth 2000
+firstKind:  first.n: 50 select map smooth => inc => prime?
+secondKind: first.n: 50 select map smooth => dec => prime?
+
+print "First 50 Pierpont primes of the first kind:"
+loop split.every: 10 firstKind 'row ->
+    print map row 'p -> pad to :string p 10
+print ""
+print "First 50 Pierpont primes of the second kind:"
+loop split.every: 10 secondKind 'row ->
+    print map row 'p -> pad to :string p 10

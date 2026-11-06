@@ -1,0 +1,56 @@
+define :node [
+    init: constructor [value prev next]
+]
+
+define :list [
+    init: constructor [head tail]
+
+    addHead: method [value][
+        item: to :node @[value null null]
+        item\next: \head
+        switch null? \head [ \tail: item ]
+                           [ \head\prev: item ]
+        \head: item
+    ]
+
+    addTail: method [value][
+        item: to :node @[value null null]
+        item\prev: \tail
+        switch null? \tail [ \head: item ]
+                           [ \tail\next: item ]
+        \tail: item
+    ]
+
+    insertAfter: method [node, value][
+        item: to :node @[value null null]
+        item\prev: node
+        item\next: node\next
+        switch null? node\next [ \tail: item ]
+                               [ node\next\prev: item ]
+        node\next: item
+    ]
+
+    string: method [][
+        items: []
+        current: \head
+        while [not? null? current][
+            'items ++ current\value
+            current: current\next
+        ]
+        join.with:" <-> " to [:string] items
+    ]
+]
+
+lst: to :list @[null null]!
+lst\addTail 2
+lst\addTail 4
+lst\addHead 1
+print lst
+
+lst\insertAfter lst\head\next 3
+print lst
+
+lst\insertAfter lst\tail 5
+print lst
+
+print ["head:" lst\head\value "tail:" lst\tail\value "before tail:" lst\tail\prev\value]

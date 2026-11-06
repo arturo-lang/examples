@@ -1,0 +1,27 @@
+euclideanRhythm: function [m, n][
+    a: repeat ["1"] m
+    b: repeat ["0"] n-m
+
+    while [1 < size b][
+        k: min @[size a, size b]
+        combined: map 0..dec k 'i -> a\[i] ++ b\[i]
+        rest: ((size a) > size b)? -> drop.times: k a
+                                   -> drop.times: k b
+        a: combined
+        b: rest
+    ]
+    join a ++ b
+]
+
+tests: [
+    5 13
+    3  8
+    5  8
+    7 12
+    4  9
+]
+
+loop tests [m, n][
+    rhythm: euclideanRhythm m n
+    print ["E(" ++ (to :string m) ++ "," (to :string n) ++ ") =" rhythm]
+]

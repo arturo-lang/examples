@@ -1,0 +1,7 @@
+line [-10 11] [10 -9] circle at [3 -5] radius 3 -> [(6.0000, -5.0000) (3.0000, -2.0000)] 
+segment [-10 11] [-11 12] circle at [3 -5] radius 3 -> [] 
+segment [3 -2] [7 -2] circle at [3 -5] radius 3 -> [(3.0000, -2.0000)] 
+line [0 -3] [0 6] circle at [0 0] radius 4 -> [(0.0000, 4.0000) (0.0000, -4.0000)] 
+segment [0 -3] [0 6] circle at [0 0] radius 4 -> [(0.0000, 4.0000)] 
+line [6 3] [10 7] circle at [4 2] radius 5 -> [(8.0000, 5.0000) (1.0000, -2.0000)] 
+segment [7 4] [11 8] circle at [4 2] radius 5 -> [(8.0000, 5.0000)] 
