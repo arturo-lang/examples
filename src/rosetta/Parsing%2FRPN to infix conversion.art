@@ -1,0 +1,31 @@
+precedence: #["^": 4 "*": 3 "/": 3 "+": 2 "-": 2]
+rightAssoc: ["^"]
+
+rpnToInfix: function [expr][
+    print ["Postfix :" expr]
+    operands: []
+    loop split.words expr 'token [
+        switch key? precedence token [
+            b: last operands
+            operands: chop operands
+            a: last operands
+            operands: chop operands
+            prec: precedence\[token]
+            right: contains? rightAssoc token
+            left: (or? a\1 < prec and? right a\1 = prec)? -> "( " ++ a\0 ++ " )"
+                                                         -> a\0
+            rhs: (or? b\1 < prec and? not? right b\1 = prec)? -> "( " ++ b\0 ++ " )"
+                                                              -> b\0
+            'operands ++ @[@[~"|left| |token| |rhs|", prec]]
+        ][
+            'operands ++ @[@[token, 9]]
+        ]
+        shown: join.with:", " map operands 'e -> e\0
+        print [token "->" "[" ++ shown ++ "]"]
+    ]
+    print ["Infix   :" first last operands]
+    print ""
+]
+
+rpnToInfix "3 4 2 * 1 5 - 2 3 ^ ^ / +"
+rpnToInfix "1 2 + 3 4 + ^ 5 6 + ^"
