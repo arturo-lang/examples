@@ -1,0 +1,37 @@
+b10: function [n][
+    parent: array.of: n neg 1
+    digit: array.of: n 0
+    seen: array.of: n false
+    queue: @[1 % n]
+    seen\[1 % n]: true
+    digit\[1 % n]: 1
+    while [not? seen\0][
+        r: first queue
+        queue: drop queue
+        loop [0 1] 'd [
+            s: ((10 * r) + d) % n
+            unless seen\[s] [
+                seen\[s]: true
+                parent\[s]: r
+                digit\[s]: d
+                'queue ++ s
+            ]
+        ]
+    ]
+    ds: []
+    r: 0
+    while [r <> neg 1][
+        'ds ++ digit\[r]
+        r: parent\[r]
+    ]
+    to :integer join to [:string] reverse ds
+]
+
+tests: (@1..10) ++ (@95..105) ++ [
+    297 576 594 891 909 999 1998 2079 2251 2277 2439 2997 4878
+]
+
+loop tests 'n [
+    b: b10 n
+    print [~"A004290(|n|) =" b "=" n "*" b / n]
+]
