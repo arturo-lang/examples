@@ -1,0 +1,13 @@
+duplicates: function [dir, minSize][
+    files: select list.recursive dir 'f ->
+        and? file? f (volume f) >= minSize
+    groups: gather.parallel files 'f ->
+        digest wait read.async f
+    sets: select values groups 'g -> 1 < size g
+    arrange.descending sets 'g -> volume first g
+]
+
+loop duplicates "examples/src/rosetta" 100`B 'files [
+    print volume first files
+    loop files 'f -> print ["   " f]
+]
