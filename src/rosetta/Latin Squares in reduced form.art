@@ -1,0 +1,29 @@
+completions: function [rows, n, candidates][
+    if n = size rows -> return @[rows]
+    start: inc size rows
+    result: []
+    loop candidates 'row [
+        fits: and? start = first row
+                   every? 0..dec n 'c -> every? rows 'r -> r\[c] <> row\[c]
+        if fits ->
+            'result ++ completions rows ++ @[row] n candidates
+    ]
+    result
+]
+
+reducedLatinSquares: function [n]->
+    completions @[@1..n] n permutate @1..n
+
+print "The four reduced latin squares of order 4:"
+loop reducedLatinSquares 4 'sq [
+    print ""
+    loop sq 'row -> print row
+]
+
+print ""
+print " n  reduced         total (reduced * n! * (n-1)!)"
+loop 1..6 'n [
+    count: size reducedLatinSquares n
+    total: count * (factorial n) * factorial dec n
+    print [n pad to :string count 8 pad to :string total 22]
+]
