@@ -1,0 +1,9 @@
+1/3 reached at index 3 value 10 
+1/4 reached at index 140 value 973 
+1/5 reached at index 260 value 1760 
+1/6 reached at index 396 value 2620 
+1/7 reached at index 1253 value 8571 
+1/8 reached at index 2960 value 19398 
+
+The first 50 happy primes:
+7 13 19 23 31 79 97 103 109 139 167 193 239 263 293 313 331 367 379 383 397 409 487 563 617 653 673 683 709 739 761 863 881 907 937 1009 1033 1039 1093 1151 1277 1303 1373 1427 1447 1481 1487 1511 1607 1663 

@@ -1,0 +1,29 @@
+happy?: function [n][
+    seen: []
+    while [not? contains? seen n][
+        'seen ++ n
+        n: sum map digits n 'd -> d * d
+    ]
+    n = 1
+]
+
+happyPrimes: []
+happyCount: 0
+ratios: [3 4 5 6 7 8]
+n: 0
+while [not? empty? ratios][
+    n: inc n
+    if happy? n [
+        happyCount: inc happyCount
+        if prime? n -> 'happyPrimes ++ n
+        k: first ratios
+        if and? not? empty? happyPrimes happyCount >= k * size happyPrimes [
+            print [~"1/|k|" "reached at index" happyCount "value" n]
+            ratios: drop ratios
+        ]
+    ]
+]
+
+print ""
+print "The first 50 happy primes:"
+print first.n: 50 happyPrimes
