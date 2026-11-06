@@ -1,0 +1,19 @@
+clock: function [][
+    d: now
+    (to :integer d) + d\nanosecond // 1000000000
+]
+
+start: clock
+
+on CtrlC [
+    elapsed: (round.to:2 clock - start) * 1`s
+    print ["Ran for" elapsed]
+    exit
+]
+
+n: 0
+while [true][
+    n: inc n
+    print n
+    pause 500`ms
+]
